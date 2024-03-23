@@ -1,17 +1,13 @@
-from enum import Enum
 import random
 import gymnasium as gym
 
-
-class Owner(Enum):
-    EMPTY = 0
-    NAUGHT = 1
-    CROSS = 2
-
+from python_xo.owner import Owner
+from python_xo.agent import Agent
 
 class NaughtsAndCrossesEnvironment:
-    def __init__(self, board: list[list[Owner]], time_step: int = 0) -> None:
+    def __init__(self, board: list[list[Owner]], agent: Agent, time_step: int = 0) -> None:
         self.board = board
+        self.agent = agent
         self.time_step = time_step
 
     @staticmethod
@@ -28,17 +24,15 @@ class NaughtsAndCrossesEnvironment:
 
         # Randomly decide if the agent goes first
         if random.random() < 0.5:
-            row, col = self.random_space()
-            self.board[row][col] = Owner.NAUGHT
-    
+            self.agent_take_turn()
+
     def agent_take_turn(self):
-        # Select the first non-empty space
-        for row in range(3):
-            for col in range(3):
-                if self.board[row][col] == Owner.EMPTY:
-                    self.board[row][col] = Owner.NAUGHT
-                    return
-    
+        action = self.agent.take_action(self.observation())
+        row = action // 3
+        col = action % 3
+        if self.board[row][col] == Owner.EMPTY:
+            self.board[row][col] = Owner.NAUGHT
+
     def render(self) -> None:
         for row in self.board:
             for i, cell in enumerate(row):
