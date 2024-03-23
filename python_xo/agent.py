@@ -39,11 +39,11 @@ class FillFirstEmptyAgent(Agent):
 
 class MinMaxAgent(Agent):
     def __init__(self, agent_mark: Literal[Owner.CROSS, Owner.NAUGHT]) -> None:
-        self._agent_mark = agent_mark
-        self._foe_mark = Owner.NAUGHT if agent_mark == Owner.CROSS else Owner.CROSS
-        self._score_map = {
-            self._agent_mark.value: 10,
-            self._foe_mark.value: -10,
+        self._AGENT_MARK = agent_mark
+        self._FOE_MARK = Owner.NAUGHT if agent_mark == Owner.CROSS else Owner.CROSS
+        self._SCORE_MAP = {
+            self._AGENT_MARK.value: 10,
+            self._FOE_MARK.value: -10,
             Owner.EMPTY.value: 0,
         }
         self.action_space = list(range(9))
@@ -66,39 +66,57 @@ class MinMaxAgent(Agent):
 
         for i in self._get_index_of_empty_cells(observation=observation):
             possible_game = list(observation)
-            possible_game[i] = self._agent_mark.value
+            possible_game[i] = self._AGENT_MARK.value
 
             possible_games.append((
                 tuple(possible_game),
                 i,
-                self._min_max(possible_game, starting_depth, self._agent_mark)
+                self._min_max(possible_game, starting_depth, self._AGENT_MARK)
             ))
 
         return max(possible_games, key=lambda x: x[2])[1]
 
     def _game_over(self, observation: tuple[int, ...]) -> bool:
-        return all([cell != Owner.EMPTY.value for cell in observation])
+        for i in range(3):
+            # Check for a win in the rows
+            if observation[i] == observation[i + 1] == observation[i + 2] != Owner.EMPTY.value:
+                return True
+            
+            # Check for a win in the columns
+            if observation[i] == observation[i + 3] == observation[i + 6] != Owner.EMPTY.value:
+                return True
+
+        # Check for a win in the diagonals
+        if observation[0] == observation[4] == observation[8] != Owner.EMPTY.value:
+            return True
+        elif observation[2] == observation[4] == observation[6] != Owner.EMPTY.value:
+            return True
+
+        if Owner.EMPTY.value not in observation:
+            return True
+
+        return False
 
     def _score_board(self, observation: tuple[int, ...], depth: int) -> int:
         score = 0
 
         for i in range(3):
             # Check for a win in the rows
-            if observation[i] == observation[i + 3] == observation[i + 6] != Owner.EMPTY:
-                score = self._score_map[observation[i]]
+            if observation[i * 3] == observation[i * 3 + 1] == observation[i * 3 + 2] != Owner.EMPTY.value:
+                score = self._SCORE_MAP[observation[i]]
                 break
             
             # Check for a win in the columns
-            if observation[i] == observation[i + 3] == observation[i + 6]:
-                score = self._score_map[observation[i]]
+            if observation[i] == observation[i + 3] == observation[i + 6] != Owner.EMPTY.value:
+                score = self._SCORE_MAP[observation[i]]
                 break
         
-        if score != 0:
+        if score == 0:
             # Check for a win in the diagonals
-            if observation[0] == observation[4] == observation[8] != Owner.EMPTY:
-                score = self._score_map[observation[0]]
-            elif observation[2] == observation[4] == observation[6] != Owner.EMPTY:
-                score = self._score_map[observation[2]]
+            if observation[0] == observation[4] == observation[8] != Owner.EMPTY.value:
+                score = self._SCORE_MAP[observation[0]]
+            elif observation[2] == observation[4] == observation[6] != Owner.EMPTY.value:
+                score = self._SCORE_MAP[observation[2]]
         
         # The player won
         if score == 10:
@@ -113,26 +131,31 @@ class MinMaxAgent(Agent):
     def _get_index_of_empty_cells(self, observation: tuple[int, ...]) -> list[int]:
         return [i for i, cell in enumerate(observation) if cell == Owner.EMPTY.value]
 
-    def _min_max(self, observation: tuple[int, ...], depth: int, last_move = Owner) -> int:
+    def _min_max(self, observation: tuple[int, ...], depth: int, current_player = Literal[Owner.CROSS, Owner.NAUGHT]) -> int:
         # If game over, return the score
         if self._game_over(observation):
             return self._score_board(observation, depth)
 
         depth += 1
         scores = []
+        possible_games = []
 
         for i in self._get_index_of_empty_cells(observation=observation):
+            # Create a new game state
             possible_game = list(observation)
-            
-            match last_move:
-                case self._agent_mark:
-                    last_move = self._foe_mark
-                    possible_game[i] = self._foe_mark.value
-                case self._foe_mark:
-                    last_move = self._agent_mark
-                    possible_game[i] = self._agent_mark.value
+            possible_game[i] = current_player.value
+            possible_games.append(tuple(possible_game))
 
-            possible_score = self._min_max(possible_game, depth, last_move)
+        for possible_game in possible_games:
+            if current_player == self._AGENT_MARK:
+                next_player = self._FOE_MARK
+            else:
+                next_player = self._AGENT_MARK
+
+            possible_score = self._min_max(possible_game, depth, next_player)
             scores.append(possible_score)
 
-        return max(scores)
+        if current_player == self._AGENT_MARK:
+            return max(scores)
+        else:
+            return min(scores)

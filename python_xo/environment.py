@@ -2,12 +2,10 @@ import random
 import gymnasium as gym
 
 from python_xo.owner import Owner
-from python_xo.agent import Agent
 
 class NaughtsAndCrossesEnvironment:
-    def __init__(self, board: list[list[Owner]], agent: Agent, time_step: int = 0) -> None:
+    def __init__(self, board: list[list[Owner]], time_step: int = 0) -> None:
         self.board = board
-        self.agent = agent
         self.time_step = time_step
 
     @staticmethod
@@ -22,12 +20,7 @@ class NaughtsAndCrossesEnvironment:
         ]
         self.time_step = 0
 
-        # Randomly decide if the agent goes first
-        if random.random() < 0.5:
-            self.agent_take_turn()
-
-    def agent_take_turn(self):
-        action = self.agent.take_action(self.observation())
+    def agent_take_turn(self, action: int):
         row = action // 3
         col = action % 3
         if self.board[row][col] == Owner.EMPTY:
@@ -92,13 +85,12 @@ class NaughtsAndCrossesEnvironment:
             row = action // 3
             col = action % 3
             if self.board[row][col] == Owner.EMPTY:
-                self.board[row][col] = Owner.CROSS
+                self.board[row][col] = Owner.NAUGHT
         
         reward = self.reward()
         terminated = self.terminated()
 
         if not terminated:
-            self.agent_take_turn()
             self.time_step += 1
         
         return self.observation(), reward, terminated, False

@@ -5,31 +5,42 @@ from stable_baselines3 import PPO, DQN
 from stable_baselines3.common.evaluation import evaluate_policy
 
 
-def run_simulation(env: NaughtsAndCrossesEnvironment) -> None:
-    env.reset()
-    rand_agent = RandomAgent()
+def run_simulation() -> None:
+    env = NaughtsAndCrossesEnvironment(
+        board=[
+            [Owner.CROSS, Owner.EMPTY, Owner.NAUGHT],
+            [Owner.NAUGHT, Owner.EMPTY, Owner.EMPTY],
+            [Owner.NAUGHT, Owner.CROSS, Owner.EMPTY],
+        ],
+        time_step=5
+    )
+    agent = MinMaxAgent(agent_mark=Owner.NAUGHT)
+    # rand_agent = RandomAgent()
 
     while not env.terminated():
         # env.step(rand_agent.take_action(env.observation()))
         env.render()
-        env.step(int(input()))
+
+        # 50/50 change of the agent taking the first move
+        if env.time_step == 0:
+            if random.choice([True, False]):
+                env.step(agent.take_action(env.observation()))
+
+        _input = int(input())
+        row = _input // 3
+        col = _input % 3
+
+        env.board[row][col] = Owner.CROSS
+
+        env.step(agent.take_action(env.observation()))
+    
+    env.render()
 
 
 def main() -> None:
-    env = NaughtsAndCrossesEnvironment(
-        board=[
-            [Owner.EMPTY, Owner.EMPTY, Owner.EMPTY],
-            [Owner.EMPTY, Owner.EMPTY, Owner.EMPTY],
-            [Owner.EMPTY, Owner.EMPTY, Owner.EMPTY],
-        ],
-        agent=MinMaxAgent(agent_mark=Owner.NAUGHT),
-    )
-    env.reset()
-
     for _ in range(1):
-        run_simulation(env)
-    
-    env.render()
+        run_simulation()
+
 
 if __name__ == "__main__":
     main()
