@@ -14,7 +14,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "python -m pip install --upgrade pip --break-system-packages && pip install -r requirements.txt --break-system-packages && pip install -r requirements_dev.txt --break-system-packages",
+	"postCreateCommand": "python -m pip install --upgrade pip --break-system-packages && pip install -r requirements.txt --break-system-packages && pip install -r requirements_dev.txt --break-system-packages && mypy --install-types",
 
 	// Configure tool-specific properties.
 	"customizations": {
@@ -27,6 +27,7 @@
 				"ms-python.mypy-type-checker"
 			],
 			"settings": {
+				"python.pythonPath": "/usr/local/python/current/bin/python",
 				"flake8.args": ["--config=${workspaceFolder}/.flake8"],
 				"flake8.interpreter": ["/usr/local/python/current/bin/python"],
 				"mypy-type-checker.interpreter": ["/usr/local/python/current/bin/python"],
