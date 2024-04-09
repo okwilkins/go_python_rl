@@ -103,6 +103,9 @@ class NaughtsAndCrossesEnvironment:
     def terminated(self) -> bool:
         return self.game_is_draw() or self.game_winner() != Owner.EMPTY
 
+    def truncated(self) -> bool:
+        return self.time_step > 9
+
     def reward(self) -> int:
         match (self.game_winner(), self.game_is_draw()):
             case (Owner.NAUGHT, _):
@@ -126,13 +129,9 @@ class NaughtsAndCrossesEnvironment:
             if not self.terminated():
                 self.agent_take_turn(self.agent.take_action(self.observation()))
 
-        reward = self.reward()
-        terminated = self.terminated()
+        self.time_step += 1
 
-        if not terminated:
-            self.time_step += 1
-
-        return self.observation(), reward, terminated, False
+        return self.observation(), self.reward(), self.terminated(), self.truncated()
 
 
 class NaughtsAndCrossesEnvironmentGym(gym.Env):
