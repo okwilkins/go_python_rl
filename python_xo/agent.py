@@ -44,10 +44,10 @@ class FillFirstEmptyAgent(Agent):
 
 class MinMaxAgent(Agent):
     def __init__(self, agent_mark: Literal[Owner.CROSS, Owner.NAUGHT]) -> None:
-        self._AGENT_MARK = agent_mark
+        self.agent_mark = agent_mark
         self._FOE_MARK = Owner.NAUGHT if agent_mark == Owner.CROSS else Owner.CROSS
         self._SCORE_MAP = {
-            self._AGENT_MARK.value: 10,
+            self.agent_mark.value: 10,
             self._FOE_MARK.value: -10,
             Owner.EMPTY.value: 0,
         }
@@ -70,10 +70,10 @@ class MinMaxAgent(Agent):
 
         for cell_idx in self._get_index_of_empty_cells(observation=observation):
             possible_game: list[int] = list(observation)
-            possible_game[cell_idx] = self._AGENT_MARK.value
+            possible_game[cell_idx] = self.agent_mark.value
             possible_game: OBS_TYPE = tuple(possible_game)  # type: ignore
 
-            next_player = self._get_next_player(current_player=self._AGENT_MARK)
+            next_player = self._get_next_player(current_player=self.agent_mark)
             score = self._min_max(possible_game, 0, next_player)  # type: ignore
 
             possible_games_and_scores.append((next_player, cell_idx, score))  # type: ignore
@@ -182,10 +182,10 @@ class MinMaxAgent(Agent):
         self,
         current_player: Literal[Owner.CROSS, Owner.NAUGHT],
     ) -> Literal[Owner.CROSS, Owner.NAUGHT]:
-        if current_player == self._AGENT_MARK:
+        if current_player == self.agent_mark:
             next_player = self._FOE_MARK
         else:
-            next_player = self._AGENT_MARK
+            next_player = self.agent_mark
 
         return next_player  # type: ignore
 
@@ -208,7 +208,7 @@ class MinMaxAgent(Agent):
             possible_score = self._min_max(possible_game, depth, next_player)
             scores.append(possible_score)
 
-        if current_player == self._AGENT_MARK:
+        if current_player == self.agent_mark:
             return max(scores)
         else:
             return min(scores)
