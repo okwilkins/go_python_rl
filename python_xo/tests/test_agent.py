@@ -14,6 +14,9 @@ from python_xo.owner import Owner
         (0, 0, 1, 0, 0, 1, 0, 0, 1),
         (1, 1, 1, 0, 0, 2, 0, 0, 2),
         (1, 2, 1, 2, 2, 2, 1, 1, 2),
+        (1, 2, 2, 0, 1, 0, 0, 0, 1),
+        (2, 1, 0, 1, 1, 0, 2, 2, 2),
+        (1, 2, 1, 2, 1, 1, 1, 2, 2),
     ]
 )
 def test_min_max_agent_game_over(observation) -> None:
@@ -42,11 +45,48 @@ def test_min_max_agent_game_not_over(observation) -> None:
         (1, 2, 1, 2, 2, 2, 1, 1, 2),
         (0, 2, 2, 1, 0, 2, 1, 1, 2),
         (0, 2, 2, 0, 1, 2, 1, 1, 2),
+        (2, 1, 1, 0, 2, 0, 0, 0, 2),
+        (2, 1, 0, 1, 1, 0, 2, 2, 2),
     ]
 )
 def test_min_max_agent_score_board_losing(observation) -> None:
     agent = MinMaxAgent(agent_mark=Owner.NAUGHT)
     assert agent._score_board(observation=observation, depth=0) == -10
+
+
+@pytest.mark.parametrize(
+    ("observation", "possible_games"),
+    [
+        (
+            (1, 1, 0, 0, 0, 2, 0, 0, 2),
+            [
+                (1, 1, 1, 0, 0, 2, 0, 0, 2),
+                (1, 1, 0, 1, 0, 2, 0, 0, 2),
+                (1, 1, 0, 0, 1, 2, 0, 0, 2),
+                (1, 1, 0, 0, 0, 2, 1, 0, 2),
+                (1, 1, 0, 0, 0, 2, 0, 1, 2),
+            ]
+        ),
+        (
+            (1, 2, 1, 0, 0, 2, 1, 1, 2),
+            [
+                (1, 2, 1, 1, 0, 2, 1, 1, 2),
+                (1, 2, 1, 0, 1, 2, 1, 1, 2),
+            ]
+        ),
+        ((1, 2, 1, 2, 2, 2, 1, 1, 2), []),
+    ]
+)
+def test_min_max_get_possible_games(observation, possible_games) -> None:
+    agent = MinMaxAgent(agent_mark=Owner.NAUGHT)
+    calculated_games = agent._get_possible_games(observation=observation, next_player=Owner.NAUGHT)
+    assert set(calculated_games) == set(possible_games)
+
+
+def test_min_max_get_next_player() -> None:
+    agent = MinMaxAgent(agent_mark=Owner.CROSS)
+    assert agent._get_next_player(current_player=Owner.CROSS) == Owner.NAUGHT
+    assert agent._get_next_player(current_player=Owner.NAUGHT) == Owner.CROSS
 
 
 @pytest.mark.parametrize(
@@ -57,6 +97,14 @@ def test_min_max_agent_score_board_losing(observation) -> None:
         ((0, 2, 0, 1, 0, 2, 1, 1, 2), -8, 1, Owner.CROSS),
         ((0, 2, 0, 0, 1, 2, 1, 1, 2), -8, 1, Owner.CROSS),
         ((0, 2, 0, 0, 0, 2, 1, 1, 2), -6, 0, Owner.NAUGHT),
+        ((1, 2, 2, 0, 0, 0, 0, 0, 1), 9, 0, Owner.NAUGHT),
+        ((2, 1, 1, 0, 0, 0, 0, 0, 2), -9, 0, Owner.CROSS),
+        ((1, 2, 2, 0, 0, 2, 1, 1, 2), -10, 0, Owner.NAUGHT),
+        ((1, 2, 2, 0, 0, 2, 1, 1, 2), -10, 0, Owner.CROSS),
+        ((2, 0, 1, 0, 0, 0, 1, 0, 2), -9, 0, Owner.CROSS),
+        ((2, 0, 1, 0, 2, 0, 0, 0, 2), -10, 0, Owner.NAUGHT),
+        ((2, 1, 0, 1, 1, 0, 2, 2, 2), -10, 0, Owner.CROSS),
+        ((2, 1, 0, 1, 1, 0, 0, 2, 2), -9, 0, Owner.CROSS),
     ]
 )
 def test_min_max_agent_algorithm(observation, correct_score, depth, current_player) -> None:
@@ -74,7 +122,9 @@ def test_min_max_agent_algorithm(observation, correct_score, depth, current_play
         ((1, 2, 1, 0, 2, 2, 1, 1, 2), [3]),
         ((0, 2, 1, 1, 2, 2, 1, 1, 2), [0]),
         ((0, 2, 0, 0, 1, 2, 1, 1, 2), [2]),
-        ((2, 0, 1, 1, 2, 0, 0, 2, 0), [2, 8]),
+        ((2, 0, 1, 1, 2, 0, 0, 2, 0), [1, 8]),
+        ((1, 0, 2, 0, 0, 0, 0, 0, 1), [4]),
+        ((1, 2, 0, 0, 2, 0, 0, 1, 1), [6]),
     ]
 )
 def test_min_max_agent_correct_move(observation, correct_moves) -> None:

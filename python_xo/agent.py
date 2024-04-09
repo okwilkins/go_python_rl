@@ -62,24 +62,27 @@ class MinMaxAgent(Agent):
 
     def take_min_max_action(self, observation: tuple[int, ...]) -> int:
         possible_games: list[tuple[tuple[int, ...], int, int]] = []
-        starting_depth = 0
 
         for i in self._get_index_of_empty_cells(observation=observation):
             possible_game = list(observation)
             possible_game[i] = self._AGENT_MARK.value
+            next_player = self._get_next_player(current_player=self._AGENT_MARK)
 
             possible_games.append((
                 tuple(possible_game),
                 i,
-                self._min_max(possible_game, starting_depth, self._AGENT_MARK)
+                self._min_max(possible_game, 0, next_player)
             ))
 
-        return max(possible_games, key=lambda x: x[2])[1]
+        max_score = max(possible_games, key=lambda x: x[2])[2]
+        # Randomly choose from the best moves
+        best_moves = [move for move in possible_games if move[2] == max_score]
+        return random.choice(best_moves)[1]
 
     def _game_over(self, observation: tuple[int, ...]) -> bool:
         for i in range(3):
             # Check for a win in the rows
-            if observation[i] == observation[i + 1] == observation[i + 2] != Owner.EMPTY.value:
+            if observation[i * 3] == observation[i * 3 + 1] == observation[i * 3 + 2] != Owner.EMPTY.value:
                 return True
             
             # Check for a win in the columns
@@ -103,7 +106,7 @@ class MinMaxAgent(Agent):
         for i in range(3):
             # Check for a win in the rows
             if observation[i * 3] == observation[i * 3 + 1] == observation[i * 3 + 2] != Owner.EMPTY.value:
-                score = self._SCORE_MAP[observation[i]]
+                score = self._SCORE_MAP[observation[i * 3]]
                 break
             
             # Check for a win in the columns
@@ -130,28 +133,49 @@ class MinMaxAgent(Agent):
     
     def _get_index_of_empty_cells(self, observation: tuple[int, ...]) -> list[int]:
         return [i for i, cell in enumerate(observation) if cell == Owner.EMPTY.value]
+    
+    def _get_possible_games(
+        self,
+        observation: tuple[int, ...],
+        next_player: Literal[Owner.CROSS, Owner.NAUGHT],
+    ) -> list[tuple[int, ...]]:
+        possible_games = []
 
-    def _min_max(self, observation: tuple[int, ...], depth: int, current_player = Literal[Owner.CROSS, Owner.NAUGHT]) -> int:
+        for i in self._get_index_of_empty_cells(observation=observation):
+            # Create a new game state
+            possible_game = list(observation)
+            possible_game[i] = next_player.value
+            possible_games.append(tuple(possible_game))
+
+        return possible_games
+    
+    def _get_next_player(
+        self,
+        current_player: Literal[Owner.CROSS, Owner.NAUGHT],
+    ) -> Literal[Owner.CROSS, Owner.NAUGHT]:
+        if current_player == self._AGENT_MARK:
+            next_player = self._FOE_MARK
+        else:
+            next_player = self._AGENT_MARK
+
+        return next_player
+
+    def _min_max(
+        self,
+        observation: tuple[int, ...],
+        depth: int,
+        current_player = Literal[Owner.CROSS, Owner.NAUGHT],
+    ) -> int:
         # If game over, return the score
         if self._game_over(observation):
             return self._score_board(observation, depth)
 
         depth += 1
         scores = []
-        possible_games = []
-
-        for i in self._get_index_of_empty_cells(observation=observation):
-            # Create a new game state
-            possible_game = list(observation)
-            possible_game[i] = current_player.value
-            possible_games.append(tuple(possible_game))
+        possible_games = self._get_possible_games(observation, current_player)
 
         for possible_game in possible_games:
-            if current_player == self._AGENT_MARK:
-                next_player = self._FOE_MARK
-            else:
-                next_player = self._AGENT_MARK
-
+            next_player = self._get_next_player(current_player)
             possible_score = self._min_max(possible_game, depth, next_player)
             scores.append(possible_score)
 
