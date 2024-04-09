@@ -17,13 +17,12 @@ def run_simulation() -> None:
     agent = MinMaxAgent(agent_mark=Owner.NAUGHT)
     # rand_agent = RandomAgent()
 
+    # 50/50 change of the agent taking the first move
+    if random.choice([True, False]):
+        env.step(agent.take_action(env.observation()))
+
     while not env.terminated():
         # env.step(rand_agent.take_action(env.observation()))
-
-        # 50/50 change of the agent taking the first move
-        if env.time_step == 0:
-            if random.choice([True, False]):
-                env.step(agent.take_action(env.observation()))
 
         env.render()
 
@@ -33,8 +32,9 @@ def run_simulation() -> None:
 
         env.board[row][col] = Owner.CROSS
 
-        env.step(agent.take_action(env.observation()))
-    
+        if not env.terminated():
+            env.step(agent.take_action(env.observation()))
+
     env.render()
 
 
