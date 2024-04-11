@@ -34,6 +34,9 @@
         "ruff.lint.args": [
           "--config=${workspaceFolder}/python_xo/pyproject.toml"
         ],
+        "ruff.format.args": [
+          "--config=${workspaceFolder}/python_xo/pyproject.toml"
+        ],
         "[python]": {
           "editor.formatOnSave": true,
           "editor.codeActionsOnSave": {
