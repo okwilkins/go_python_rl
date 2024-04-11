@@ -1,9 +1,10 @@
 import random
 from typing import Literal
+
 import gymnasium as gym
 
-from python_xo.owner import Owner
 from python_xo.agent import Agent
+from python_xo.owner import Owner
 
 
 class NaughtsAndCrossesEnvironment:
@@ -135,9 +136,7 @@ class NaughtsAndCrossesEnvironment:
 
 
 class NaughtsAndCrossesEnvironmentGym(gym.Env):
-    def __init__(
-        self, naughts_and_crosses_environment: NaughtsAndCrossesEnvironment
-    ) -> None:
+    def __init__(self, naughts_and_crosses_environment: NaughtsAndCrossesEnvironment) -> None:
         self.naughts_and_crosses_environment = naughts_and_crosses_environment
         self.action_space = gym.spaces.Discrete(9)
         self.observation_space = gym.spaces.MultiDiscrete([3] * 9)
@@ -149,8 +148,8 @@ class NaughtsAndCrossesEnvironmentGym(gym.Env):
         return self.naughts_and_crosses_environment.observation(), None
 
     def step(self, action: int):
-        observation, reward, terminated, truncated = (
-            self.naughts_and_crosses_environment.step(action)
+        observation, reward, terminated, truncated = self.naughts_and_crosses_environment.step(
+            action
         )
         return observation, reward, terminated, truncated, {}
 

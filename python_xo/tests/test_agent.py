@@ -1,4 +1,5 @@
 import pytest
+
 from python_xo.agent import MinMaxAgent
 from python_xo.owner import Owner
 
@@ -79,9 +80,7 @@ def test_min_max_agent_score_board_losing(observation) -> None:
 )
 def test_min_max_get_possible_games(observation, possible_games) -> None:
     agent = MinMaxAgent(agent_mark=Owner.NAUGHT)
-    calculated_games = agent._get_possible_games(
-        observation=observation, next_player=Owner.NAUGHT
-    )
+    calculated_games = agent._get_possible_games(observation=observation, next_player=Owner.NAUGHT)
     assert set(calculated_games) == set(possible_games)
 
 
@@ -109,14 +108,10 @@ def test_min_max_get_next_player() -> None:
         ((2, 1, 0, 1, 1, 0, 0, 2, 2), -9, 0, Owner.CROSS),
     ],
 )
-def test_min_max_agent_algorithm(
-    observation, correct_score, depth, current_player
-) -> None:
+def test_min_max_agent_algorithm(observation, correct_score, depth, current_player) -> None:
     agent = MinMaxAgent(agent_mark=Owner.NAUGHT)
     assert (
-        agent._min_max(
-            observation=observation, depth=depth, current_player=current_player
-        )
+        agent._min_max(observation=observation, depth=depth, current_player=current_player)
         == correct_score
     )
 

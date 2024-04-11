@@ -1,12 +1,12 @@
+# import random
+from stable_baselines3 import PPO
+
+from python_xo.agent import MinMaxAgent
 from python_xo.environment import (
     NaughtsAndCrossesEnvironment,
     NaughtsAndCrossesEnvironmentGym,
     Owner,
 )
-from python_xo.agent import MinMaxAgent
-
-# import random
-from stable_baselines3 import PPO
 
 # from stable_baselines3.common.evaluation import evaluate_policy
 
