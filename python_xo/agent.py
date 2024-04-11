@@ -80,9 +80,7 @@ class MinMaxAgent(Agent):
 
         max_score = max(possible_games_and_scores, key=lambda x: x[2])[2]
         # Randomly choose from the best moves
-        best_moves = [
-            move for move in possible_games_and_scores if move[2] == max_score
-        ]
+        best_moves = [move for move in possible_games_and_scores if move[2] == max_score]
         return random.choice(best_moves)[1]
 
     def _game_over(self, observation: OBS_TYPE) -> bool:
@@ -97,12 +95,7 @@ class MinMaxAgent(Agent):
                 return True
 
             # Check for a win in the columns
-            if (
-                observation[i]
-                == observation[i + 3]
-                == observation[i + 6]
-                != Owner.EMPTY.value
-            ):
+            if observation[i] == observation[i + 3] == observation[i + 6] != Owner.EMPTY.value:
                 return True
 
         # Check for a win in the diagonals
@@ -131,12 +124,7 @@ class MinMaxAgent(Agent):
                 break
 
             # Check for a win in the columns
-            if (
-                observation[i]
-                == observation[i + 3]
-                == observation[i + 6]
-                != Owner.EMPTY.value
-            ):
+            if observation[i] == observation[i + 3] == observation[i + 6] != Owner.EMPTY.value:
                 score = self._SCORE_MAP[observation[i]]
                 break
 
@@ -144,9 +132,7 @@ class MinMaxAgent(Agent):
             # Check for a win in the diagonals
             if observation[0] == observation[4] == observation[8] != Owner.EMPTY.value:
                 score = self._SCORE_MAP[observation[0]]
-            elif (
-                observation[2] == observation[4] == observation[6] != Owner.EMPTY.value
-            ):
+            elif observation[2] == observation[4] == observation[6] != Owner.EMPTY.value:
                 score = self._SCORE_MAP[observation[2]]
 
         # The player won
