@@ -38,6 +38,10 @@ func (a *FillFirstEmptyAgent) TakeAction(observation [9]int) int {
 	panic("No empty cells found!")
 }
 
+func (a *FillFirstEmptyAgent) GetMark() int {
+	return a.Mark
+}
+
 func getIndexOfEmptyCells(observation [9]int) []int {
 	var empty_cells []int
 	for i, cell := range observation {

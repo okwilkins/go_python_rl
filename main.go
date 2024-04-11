@@ -28,7 +28,7 @@ func run_simulation_non_ref() {
 }
 
 func main() {
-	agent := &xo.RandomAgent{Mark: xo.Naught}
+	agent := &xo.FillFirstEmptyAgent{Mark: xo.Naught}
 	env := xo.NaughtsAndCrossesEnvironment{
 		Board: xo.Board{
 			{xo.Empty, xo.Empty, xo.Empty},
