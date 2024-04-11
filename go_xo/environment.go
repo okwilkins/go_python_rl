@@ -6,157 +6,155 @@ import (
 )
 
 const (
-	Empty = 0
-	Naught = 1
-	Cross = 2
+    Empty = 0
+    Naught = 1
+    Cross = 2
 )
 
 type Board [3][3]int
 
 type NaughtsAndCrossesEnvironment struct {
-	Board
-	timeStep int
+    Board
+    TimeStep int
+    UserMark int
+    Agent Agent
+    LastPlayer int
 }
 
-func (b *NaughtsAndCrossesEnvironment) Reset() {
-	b.Board = Board{
-		{Empty, Empty, Empty},
-		{Empty, Empty, Empty},
-		{Empty, Empty, Empty},
-	}
-	b.timeStep = 0
+func (env *NaughtsAndCrossesEnvironment) Reset() {
+    env.Board = Board{
+        {Empty, Empty, Empty},
+        {Empty, Empty, Empty},
+        {Empty, Empty, Empty},
+    }
+    env.TimeStep = 0
 
-	// Randomly decide if the agent goes first
-	if rand.Intn(2) == 1 {
-		row, col := b.randomSpace()
-		b.Board[row][col] = Naught
-	}
+    // Randomly decide if the agent goes first
+    if rand.Intn(2) == 1 {
+        env.AgentTakeTurn()
+        env.LastPlayer = env.Agent.GetMark()
+    }
 }
 
-func (b *NaughtsAndCrossesEnvironment) randomSpace() (int, int) {
-	row := rand.Intn(len(b.Board))
-	col := rand.Intn(len(b.Board))
-	return row, col
+func (env *NaughtsAndCrossesEnvironment) AgentTakeTurn() () {
+    row := rand.Intn(len(env.Board))
+    col := rand.Intn(len(env.Board))
+    env.Board[row][col] = env.Agent.GetMark()
 }
 
-func (b *NaughtsAndCrossesEnvironment) agentTakeTurn() {
-	// Select the first non-empty space
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			if b.Board[i][j] == Empty {
-				b.Board[i][j] = Naught
-				return
-			}
-		}
-	}
+func (env *NaughtsAndCrossesEnvironment) Render() {
+    for i := 0; i < 3; i++ {
+        for j := 0; j < 3; j++ {
+            switch env.Board[i][j] {
+            case Empty:
+                fmt.Print(" ")
+            case Naught:
+                fmt.Print("O")
+            case Cross:
+                fmt.Print("X")
+            }
+
+            if j < 2 {
+                fmt.Print("|")
+            }
+        }
+        fmt.Println()
+    }
 }
 
-func (b *NaughtsAndCrossesEnvironment) Step(action int) (observation [9]int, reward int, terminated bool, truncated bool) {
-    if !b.Terminated() {
-        row := action / 3
-        col := action % 3
-        if b.Board[row][col] == Empty {
-            b.Board[row][col] = Cross
+func (env *NaughtsAndCrossesEnvironment) Observation() [9]int {
+    obs := [9]int{
+        env.Board[0][0], env.Board[0][1], env.Board[0][2],
+        env.Board[1][0], env.Board[1][1], env.Board[1][2],
+        env.Board[2][0], env.Board[2][1], env.Board[2][2],
+    }
+    return obs
+}
+
+func (env *NaughtsAndCrossesEnvironment) GameIsDraw() bool {
+    for i := 0; i < 3; i++ {
+        for j := 0; j < 3; j++ {
+            if env.Board[i][j] == Empty {
+                return false
+            }
         }
     }
 
-    reward = b.Reward()
-    terminated = b.Terminated()
-
-    if !terminated {
-        b.agentTakeTurn()
-        b.timeStep += 1
-    }
-
-	observation = b.Observation()
-	truncated = false
-
-	return
+    return true
 }
 
-func (b *NaughtsAndCrossesEnvironment) Render() {
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			switch b.Board[i][j] {
-			case Empty:
-				fmt.Print(" ")
-			case Naught:
-				fmt.Print("O")
-			case Cross:
-				fmt.Print("X")
-			}
-
-			if j < 2 {
-				fmt.Print("|")
-			}
-		}
-		fmt.Println()
-	}
-}
-
-func (b *NaughtsAndCrossesEnvironment) Observation() [9]int {
-	obs := [9]int{}
-
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			obs[i*3+j] = b.Board[i][j]
-		}
-	}
-	return obs
-}
-
-func (b *NaughtsAndCrossesEnvironment) gameIsDraw() bool {
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			if b.Board[i][j] == Empty {
-                return false
-            }
-		}
-	}
-
-	return true
-}
-
-func (b *NaughtsAndCrossesEnvironment) gameWinner() int {
-	for i := 0; i < 3; i++ {
-		// Check for a win in the rows
-        if b.Board[i][0] == b.Board[i][1] && b.Board[i][1] == b.Board[i][2] && b.Board[i][0] != Empty{
-            return b.Board[i][0]
+func (env *NaughtsAndCrossesEnvironment) GameWinner() int {
+    for i := 0; i < 3; i++ {
+        // Check for a win in the rows
+        if env.Board[i][0] == env.Board[i][1] && env.Board[i][1] == env.Board[i][2] && env.Board[i][0] != Empty{
+            return env.Board[i][0]
         }
 
         // Check for a win in the columns
-        if b.Board[0][i] == b.Board[1][i] && b.Board[1][i] == b.Board[2][i] && b.Board[0][i] != Empty{
-            return b.Board[0][i]
+        if env.Board[0][i] == env.Board[1][i] && env.Board[1][i] == env.Board[2][i] && env.Board[0][i] != Empty{
+            return env.Board[0][i]
         }
     }
 
     // Check for a win in the diagonals
-    if b.Board[0][0] == b.Board[1][1] && b.Board[1][1] == b.Board[2][2] && b.Board[0][0] != Empty{
-        return b.Board[0][0]
+    if env.Board[0][0] == env.Board[1][1] && env.Board[1][1] == env.Board[2][2] && env.Board[0][0] != Empty{
+        return env.Board[0][0]
     }
 
-    if b.Board[0][2] == b.Board[1][1] && b.Board[1][1] == b.Board[2][0] && b.Board[0][2] != Empty{
-        return b.Board[0][2]
+    if env.Board[0][2] == env.Board[1][1] && env.Board[1][1] == env.Board[2][0] && env.Board[0][2] != Empty{
+        return env.Board[0][2]
     }
 
-	return Empty
+    return Empty
 }
 
-func (b *NaughtsAndCrossesEnvironment) Terminated() bool {
-	return b.gameIsDraw() || b.gameWinner() != Empty
+func (env *NaughtsAndCrossesEnvironment) Terminated() bool {
+    return env.GameIsDraw() || env.GameWinner() != Empty
 }
 
-func (b *NaughtsAndCrossesEnvironment) Reward() int {
-	switch b.gameWinner() {
-		case Naught:
-			return -10
-		case Cross:
-			return 10
-		}
+func (env *NaughtsAndCrossesEnvironment) Truncated() bool {
+    return env.TimeStep > 9
+}
 
-	if b.gameIsDraw() {
-		return 1
-	}
+func (env *NaughtsAndCrossesEnvironment) Reward() int {
+    switch env.GameWinner() {
+        case Naught:
+            return -100
+        case Cross:
+            return 100
+        }
 
-	return 0
+    if env.GameIsDraw() {
+        return 50
+    }
+
+    return 0
+}
+
+func (env *NaughtsAndCrossesEnvironment) Step(action int) (
+    observation [9]int,
+    reward int,
+    terminated bool,
+    truncated bool,
+) {
+    if !env.Terminated() {
+        row := action / 3
+        col := action % 3
+        if env.Board[row][col] == Empty {
+            env.Board[row][col] = env.UserMark
+        }
+    }
+
+    reward = env.Reward()
+    terminated = env.Terminated()
+
+    if !terminated {
+        env.AgentTakeTurn()
+        env.TimeStep += 1
+    }
+
+    observation = env.Observation()
+    truncated = env.Truncated()
+
+    return
 }
