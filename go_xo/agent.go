@@ -34,6 +34,8 @@ func (a *FillFirstEmptyAgent) TakeAction(observation [9]int) int {
 			return cell
 		}
 	}
+
+	panic("No empty cells found!")
 }
 
 func getIndexOfEmptyCells(observation [9]int) []int {
