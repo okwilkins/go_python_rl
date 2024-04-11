@@ -13,6 +13,29 @@ type RandomAgent struct {
 	Mark int
 }
 
+func (a *RandomAgent) TakeAction(observation [9]int) int {
+	empty_cells := getIndexOfEmptyCells(observation)
+	return empty_cells[rand.Intn(len(empty_cells))]
+}
+
+func (a *RandomAgent) GetMark() int {
+	return a.Mark
+}
+
+type FillFirstEmptyAgent struct {
+	Mark int
+}
+
+func (a *FillFirstEmptyAgent) TakeAction(observation [9]int) int {
+	empty_cells := getIndexOfEmptyCells(observation)
+
+	for _, cell := range empty_cells {
+		if observation[cell] == Empty {
+			return cell
+		}
+	}
+}
+
 func getIndexOfEmptyCells(observation [9]int) []int {
 	var empty_cells []int
 	for i, cell := range observation {
@@ -21,13 +44,4 @@ func getIndexOfEmptyCells(observation [9]int) []int {
 		}
 	}
 	return empty_cells
-}
-
-func (a *RandomAgent) TakeAction(observation [9]int) int {
-	empty_cells := getIndexOfEmptyCells(observation)
-	return empty_cells[rand.Intn(len(empty_cells))]
-}
-
-func (a *RandomAgent) GetMark() int {
-	return a.Mark
 }
