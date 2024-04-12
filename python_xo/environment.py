@@ -32,6 +32,7 @@ class NaughtsAndCrossesEnvironment:
         # 50/50 change of the agent taking the first move
         if random.choice([True, False]):
             self.agent_take_turn(self.agent.take_action(self.observation()))
+            self.last_player = self.agent.agent_mark
 
     def agent_take_turn(self, action: int):
         row = action // 3
