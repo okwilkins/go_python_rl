@@ -52,6 +52,32 @@ func TestMinMaxAgentNotGameOver(t *testing.T) {
 	}
 }
 
+func TestMinMaxAgentScoreBoardLosing(t *testing.T) {
+	agent := xo.MinMaxAgent{
+		AgentMark:    xo.Naught,
+		OpponentMark: xo.Cross,
+	}
+
+	observations := [][9]int{
+		{1, 2, 2, 0, 0, 2, 1, 1, 2},
+		{2, 2, 1, 1, 2, 2, 1, 1, 2},
+		{1, 2, 1, 2, 2, 2, 1, 1, 2},
+		{0, 2, 2, 1, 0, 2, 1, 1, 2},
+		{0, 2, 2, 0, 1, 2, 1, 1, 2},
+		{2, 1, 1, 0, 2, 0, 0, 0, 2},
+		{2, 1, 0, 1, 1, 0, 2, 2, 2},
+	}
+	correct_score := -10
+
+	for _, observation := range observations {
+		score := agent.ScoreBoard(observation, 0)
+
+		if score != correct_score {
+			t.Errorf("Observation %v had score %v! Was meat to be %v!", observation, score, correct_score)
+		}
+	}
+}
+
 func TestGetIndexOfEmptyCells(t *testing.T) {
 	observations := [][9]int{
 		{1, 0, 2, 0, 1, 0, 2, 0, 1},
