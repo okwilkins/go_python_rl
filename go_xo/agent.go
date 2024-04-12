@@ -5,6 +5,8 @@ import (
 	"slices"
 )
 
+// TODO: use pointers for the agents
+
 type Agent interface {
 	TakeAction(observation [9]int) int
 	GetMark() int
@@ -15,7 +17,7 @@ type RandomAgent struct {
 }
 
 func (a *RandomAgent) TakeAction(observation [9]int) int {
-	empty_cells := getIndexOfEmptyCells(observation)
+	empty_cells := GetIndexOfEmptyCells(observation)
 	return empty_cells[rand.Intn(len(empty_cells))]
 }
 
@@ -28,7 +30,7 @@ type FillFirstEmptyAgent struct {
 }
 
 func (a *FillFirstEmptyAgent) TakeAction(observation [9]int) int {
-	empty_cells := getIndexOfEmptyCells(observation)
+	empty_cells := GetIndexOfEmptyCells(observation)
 
 	for _, cell := range empty_cells {
 		if observation[cell] == Empty {
@@ -67,7 +69,7 @@ func (a *MinMaxAgent) TakeAction(observation [9]int) int {
 }
 
 func (a *MinMaxAgent) TakeRandomAction(observation [9]int) int {
-	empty_cells := getIndexOfEmptyCells(observation)
+	empty_cells := GetIndexOfEmptyCells(observation)
 	return empty_cells[rand.Intn(len(empty_cells))]
 }
 
@@ -75,7 +77,7 @@ func (a *MinMaxAgent) TakeMinMaxAction(observation [9]int) int {
 	best_score := -10
 	var best_moves []int
 
-	for _, cell := range getIndexOfEmptyCells(observation) {
+	for _, cell := range GetIndexOfEmptyCells(observation) {
 		possible_game := observation
 		possible_game[cell] = a.AgentMark
 
@@ -94,7 +96,7 @@ func (a *MinMaxAgent) TakeMinMaxAction(observation [9]int) int {
 	return best_moves[randIdx]
 }
 
-func (a *MinMaxAgent) gameOver(observation [9]int) bool {
+func (a *MinMaxAgent) GameOver(observation [9]int) bool {
 	for i := 0; i < 3; i++ {
 		// Check for win in the rows
 		if observation[i*3] == observation[i*3+1] &&
@@ -114,13 +116,13 @@ func (a *MinMaxAgent) gameOver(observation [9]int) bool {
 	// Check for win in diagonals
 	if observation[0] == observation[4] &&
 		observation[4] == observation[8] &&
-		observation[8] == Empty {
+		observation[8] != Empty {
 		return true
 	}
 
 	if observation[2] == observation[4] &&
 		observation[4] == observation[6] &&
-		observation[6] == Empty {
+		observation[6] != Empty {
 		return true
 	}
 
@@ -185,7 +187,7 @@ func (a *MinMaxAgent) ScoreBoard(observation [9]int, depth int) int {
 func (a *MinMaxAgent) GetPossibleGames(observation [9]int, next_player int) [][9]int {
 	var possible_games [][9]int
 
-	for _, cell := range getIndexOfEmptyCells(observation) {
+	for _, cell := range GetIndexOfEmptyCells(observation) {
 		possible_game := observation
 		possible_game[cell] = next_player
 		possible_games = append(possible_games, possible_game)
@@ -204,7 +206,7 @@ func (a *MinMaxAgent) GetNextPlayer(current_player int) int {
 
 func (a *MinMaxAgent) MinMax(observation [9]int, depth int, current_player int) int {
 	// If game over, return the score
-	if a.gameOver(observation) {
+	if a.GameOver(observation) {
 		return a.ScoreBoard(observation, depth)
 	}
 
@@ -238,7 +240,7 @@ func (a *MinMaxAgent) GetMark() int {
 	return a.AgentMark
 }
 
-func getIndexOfEmptyCells(observation [9]int) []int {
+func GetIndexOfEmptyCells(observation [9]int) []int {
 	var empty_cells []int
 	for i, cell := range observation {
 		if cell == Empty {
