@@ -32,6 +32,26 @@ func TestMinMaxAgentGameOver(t *testing.T) {
 		}
 	}
 }
+
+func TestMinMaxAgentNotGameOver(t *testing.T) {
+	agent := xo.MinMaxAgent{
+		AgentMark:    xo.Naught,
+		OpponentMark: xo.Cross,
+	}
+
+	game_over_observations := [][9]int{
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{0, 0, 1, 0, 2, 0, 0, 0, 1},
+	}
+
+	for _, observation := range game_over_observations {
+		if agent.GameOver(observation) {
+			t.Errorf("Observation %v was supposed to not be game over!", observation)
+		}
+	}
+}
+
 func TestGetIndexOfEmptyCells(t *testing.T) {
 	observations := [][9]int{
 		{1, 0, 2, 0, 1, 0, 2, 0, 1},
