@@ -46,7 +46,7 @@ func TestGetIndexOfEmptyCells(t *testing.T) {
 		{0, 2, 4, 6, 8},
 	}
 
-	for i, _ := range observations {
+	for i := range observations {
 		result := xo.GetIndexOfEmptyCells(observations[i])
 
 		if !reflect.DeepEqual(result, expected[i]) {
