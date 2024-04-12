@@ -28,7 +28,7 @@ func run_simulation_non_ref() {
 }
 
 func main() {
-	agent := &xo.FillFirstEmptyAgent{Mark: xo.Naught}
+	agent := &xo.MinMaxAgent{AgentMark: xo.Naught, OpponentMark: xo.Cross}
 	env := xo.NaughtsAndCrossesEnvironment{
 		Board: xo.Board{
 			{xo.Empty, xo.Empty, xo.Empty},
@@ -57,4 +57,6 @@ func main() {
 			env.Step(num)
 		}
 	}
+
+	env.Render()
 }
