@@ -214,9 +214,9 @@ func (a *MinMaxAgent) MinMax(observation [9]int, depth int, current_player int) 
 	var scores []int
 	possible_games := a.GetPossibleGames(observation, current_player)
 
-	for _, pospossible_game := range possible_games {
+	for _, possible_game := range possible_games {
 		next_player := a.GetNextPlayer(current_player)
-		possible_score := a.MinMax(pospossible_game, depth, next_player)
+		possible_score := a.MinMax(possible_game, depth, next_player)
 		scores = append(scores, possible_score)
 	}
 
