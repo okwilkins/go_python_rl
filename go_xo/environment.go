@@ -31,15 +31,9 @@ func (env *NaughtsAndCrossesEnvironment) Reset() {
 
 	// Randomly decide if the agent goes first
 	if rand.Intn(2) == 1 {
-		env.AgentTakeTurn()
+		env.Agent.TakeAction(env.Observation())
 		env.LastPlayer = env.Agent.GetMark()
 	}
-}
-
-func (env *NaughtsAndCrossesEnvironment) AgentTakeTurn() {
-	row := rand.Intn(len(env.Board))
-	col := rand.Intn(len(env.Board))
-	env.Board[row][col] = env.Agent.GetMark()
 }
 
 func (env *NaughtsAndCrossesEnvironment) Render() {
@@ -138,26 +132,31 @@ func (env *NaughtsAndCrossesEnvironment) Step(action int) (
 	truncated bool,
 ) {
 	if !env.Terminated() {
-		row := action / 3
-		col := action % 3
-		fmt.Printf("Row: %v", row)
-		fmt.Printf("Column: %v", col)
-		fmt.Println()
-		if env.Board[row][col] == Empty {
-			env.Board[row][col] = env.UserMark
+		env.PlaceMarker(action, env.UserMark)
+
+		if !terminated {
+			agent_action := env.Agent.TakeAction(env.Observation())
+			env.PlaceMarker(agent_action, env.Agent.GetMark())
 		}
 	}
 
+	env.TimeStep += 1
 	reward = env.Reward()
 	terminated = env.Terminated()
-
-	if !terminated {
-		env.AgentTakeTurn()
-		env.TimeStep += 1
-	}
-
 	observation = env.Observation()
 	truncated = env.Truncated()
 
 	return
+}
+
+func (env *NaughtsAndCrossesEnvironment) PlaceMarker(
+	action int,
+	player_mark int,
+) {
+	row := action / 3
+	col := action % 3
+
+	if env.Board[row][col] == Empty {
+		env.Board[row][col] = player_mark
+	}
 }
