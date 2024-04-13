@@ -163,22 +163,22 @@ func (a *MinMaxAgent) ScoreBoard(observation [9]int, depth int) int {
 		// Check for a win in the diagonals
 		if observation[0] == observation[4] &&
 			observation[4] == observation[8] &&
-			observation[8] == Empty {
-			score = observation[0]
+			observation[8] != Empty {
+			score = a.GetMinMaxScoreMap()[observation[0]]
 		} else if observation[2] == observation[4] &&
 			observation[4] == observation[6] &&
-			observation[6] == Empty {
-			score = observation[2]
+			observation[6] != Empty {
+			score = a.GetMinMaxScoreMap()[observation[2]]
 		}
 	}
 
-	if score == 10 {
-		// The player won
+	switch score {
+	case 0:
 		return score - depth
-	} else if score == -10 {
+	case -10:
 		// The player lost
 		return score + depth
-	} else {
+	default:
 		// The game is a draw
 		return 0
 	}
@@ -197,10 +197,10 @@ func (a *MinMaxAgent) GetPossibleGames(observation [9]int, next_player int) [][9
 }
 
 func (a *MinMaxAgent) GetNextPlayer(current_player int) int {
-	if current_player == a.AgentMark {
-		return a.OpponentMark
+	if current_player == Cross {
+		return Naught
 	} else {
-		return a.AgentMark
+		return Cross
 	}
 }
 
