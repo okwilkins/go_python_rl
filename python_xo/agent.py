@@ -167,12 +167,10 @@ class MinMaxAgent(Agent):
         self,
         current_player: Literal[Owner.CROSS, Owner.NAUGHT],
     ) -> Literal[Owner.CROSS, Owner.NAUGHT]:
-        if current_player == self.agent_mark:
-            next_player = self._FOE_MARK
+        if current_player == Owner.CROSS:
+            return Owner.NAUGHT
         else:
-            next_player = self.agent_mark
-
-        return next_player  # type: ignore
+            return Owner.CROSS
 
     def _min_max(
         self,
