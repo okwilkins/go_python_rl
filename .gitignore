@@ -179,3 +179,5 @@ cython_debug/
 
 # Go workspace file
 go.work
+
+.vscode/
