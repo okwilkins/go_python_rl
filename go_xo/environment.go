@@ -134,7 +134,7 @@ func (env *NaughtsAndCrossesEnvironment) Step(action int) (
 	if !env.Terminated() {
 		env.PlaceMarker(action, env.UserMark)
 
-		if !terminated {
+		if !env.Terminated() {
 			agent_action := env.Agent.TakeAction(env.Observation())
 			env.PlaceMarker(agent_action, env.Agent.GetMark())
 		}
