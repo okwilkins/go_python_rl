@@ -40,9 +40,9 @@ COPY requirements.txt /tmp/requirements.txt
 RUN /home/rluser/python-venv/bin/python -m pip install -r /tmp/requirements.txt
 
 # Copy Python files
-COPY main.py /home/rluser/go_python_rl/main.py
-COPY python_xo /home/rluser/go_python_rl/python_xo
-ENV PYTHONPATH=$PYTHONPATH:/home/rluser/go_python_rl
+COPY src/main.py /home/rluser/go_python_rl/main.py
+COPY src/python_xo /home/rluser/go_python_rl/src/python_xo
+ENV PYTHONPATH=$PYTHONPATH:/home/rluser/go_python_rl/src
 
 # Clean up
 USER root

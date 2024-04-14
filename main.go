@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	xo "xo/go_xo"
+	xo "xo/src/go_xo"
 )
 
 func run_simulation(env *xo.NaughtsAndCrossesEnvironment) {
