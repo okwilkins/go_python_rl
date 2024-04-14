@@ -9,6 +9,14 @@ on:
       - 'main.go'
       - 'src/go_xo/**'
       - '.github/workflows/go-build.yml'
+  pull_request:
+    branches: ['main']
+    paths:
+      - 'go.mod'
+      - 'go.sum'
+      - 'main.go'
+      - 'src/go_xo/**'
+      - '.github/workflows/go-build.yml'
 
 permissions:
   contents: write
@@ -40,6 +48,6 @@ jobs:
       - name: Code style check
         uses: dominikh/staticcheck-action@v1.2.0
         with:
-          version: "2022.1.1"
+          version: "2023.1.1"
           install-go: false
           cache-key: ${{ matrix.go }}
