@@ -207,7 +207,7 @@ func TestMinMaxAgentAlgorithm(t *testing.T) {
 	}
 }
 
-func TestMinMaxAgentCorrectMove(t *testing.T) {
+func TestMinMaxAgentGetMinMaxBestMoves(t *testing.T) {
 	agent := xo.MinMaxAgent{
 		AgentMark:    xo.Naught,
 		OpponentMark: xo.Cross,
@@ -224,15 +224,17 @@ func TestMinMaxAgentCorrectMove(t *testing.T) {
 	correct_moves := [][]byte{{3}, {0}, {2}, {1, 8}, {4}, {6}}
 
 	for i := range observations {
-		action := agent.TakeAction(observations[i])
+		actions := agent.GetMinMaxBestMoves(observations[i])
 
-		if !slices.Contains(correct_moves[i], action) {
-			t.Errorf(
-				"Observation %v had action %v! Correct actions: %v!",
-				observations[i],
-				action,
-				correct_moves[i],
-			)
+		for _, action := range actions {
+			if !slices.Contains(correct_moves[i], action) {
+				t.Errorf(
+					"Observation %v had action %v! Correct actions: %v!",
+					observations[i],
+					action,
+					correct_moves[i],
+				)
+			}
 		}
 	}
 }

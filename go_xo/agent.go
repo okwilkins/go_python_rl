@@ -75,6 +75,12 @@ func (a *MinMaxAgent) TakeRandomAction(observation [9]byte) byte {
 }
 
 func (a *MinMaxAgent) TakeMinMaxAction(observation [9]byte) byte {
+	best_moves := a.GetMinMaxBestMoves(observation)
+	randIdx := rand.Intn(len(best_moves))
+	return best_moves[randIdx]
+}
+
+func (a *MinMaxAgent) GetMinMaxBestMoves(observation [9]byte) []byte {
 	var best_score int8 = -10
 	var best_moves []byte
 
@@ -93,8 +99,7 @@ func (a *MinMaxAgent) TakeMinMaxAction(observation [9]byte) byte {
 		}
 	}
 
-	randIdx := rand.Intn(len(best_moves))
-	return best_moves[randIdx]
+	return best_moves
 }
 
 func (a *MinMaxAgent) GameOver(observation [9]byte) bool {
