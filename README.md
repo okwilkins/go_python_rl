@@ -32,10 +32,3 @@ If you prefer not to use the dev container, you can also set up a local developm
 
 
 Sure, here's the updated README with a section for Docker and Docker Compose:
-
-## Local Development
-
-If you prefer not to use the dev container, you can also set up a local development environment. Make sure you have the following installed on your machine:
-
-- [Go](https://golang.org/dl/) (version 1.16 or newer)
-- [Python](https://www.python.org/downloads/) (version 3.9 or newer)
