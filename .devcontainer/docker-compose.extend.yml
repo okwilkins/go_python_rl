@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      target: development
+    volumes:
+      - .:/home/rluser/go_python_rl
+      - $HOME/.ssh:/home/rluser/.ssh
+    
+    # [Optional] Required for ptrac-based debuggers like C++, Go and Rust
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    
+    # Overrides default command so things don't shut down after the process ends
+    command: /bin/sh -c "while sleep 1000; do :; done"

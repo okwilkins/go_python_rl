@@ -1,37 +1,43 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/go
 {
-  "name": "Go",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/go:1-1.22-bookworm",
+  "name": "Go-Python RL",
+  // The order of the files is important since later files override the previous ones
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "./docker-compose.extend.yml"
+  ],
+  "service": "app",
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
-    "ghcr.io/devcontainers/features/python:1": {}
+    "ghcr.io/devcontainers/features/common-utils:2": {}
   },
+  "workspaceFolder": "/home/rluser/go_python_rl",
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "python -m pip install --upgrade pip --break-system-packages && pip install -r requirements.txt --break-system-packages && pip install -r requirements_dev.txt --break-system-packages",
+  "postCreateCommand": "echo \"alias python='/home/rluser/python-venv/bin/python'\" >> /home/rluser/.bashrc",
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
       "extensions": [
+        "golang.go",
         "ms-python.python",
         "ms-python.mypy-type-checker",
         "charliermarsh.ruff"
       ],
       "settings": {
-        "python.pythonPath": "/usr/local/python/current/bin/python",
+        "python.pythonPath": "/home/rluser/python-venv/bin/python",
         "mypy-type-checker.interpreter": [
-          "/usr/local/python/current/bin/python"
+          "/home/rluser/python-venv/bin/python"
         ],
         "mypy-type-checker.args": [
           "--config-file=${workspaceFolder}/python_xo/pyproject.toml"
         ],
         "python.testing.pytestEnabled": true,
-        "python.testing.pytestPath": "/usr/local/python/current/bin/python",
+        "python.testing.pytestPath": "/home/rluser/python-venv/bin/python",
         "ruff.interpreter": [
-          "/usr/local/python/current/bin/python"
+          "/home/rluser/python-venv/bin/python"
         ],
         "ruff.lint.args": [
           "--config=${workspaceFolder}/python_xo/pyproject.toml"
