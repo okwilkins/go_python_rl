@@ -2,7 +2,6 @@ name: Go build and test
 
 on:
   push:
-    branches: ['main', 'release']
     paths:
       - 'go.mod'
       - 'go.sum'
@@ -10,7 +9,6 @@ on:
       - 'src/go_xo/**'
       - '.github/workflows/go-build.yml'
   pull_request:
-    branches: ['main', 'release']
     paths:
       - 'go.mod'
       - 'go.sum'
