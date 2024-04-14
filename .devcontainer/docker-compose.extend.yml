@@ -4,7 +4,6 @@ services:
       target: development
     volumes:
       - .:/home/rluser/go_python_rl
-      - $HOME/.ssh:/home/rluser/.ssh
     
     # [Optional] Required for ptrac-based debuggers like C++, Go and Rust
     cap_add:
