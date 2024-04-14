@@ -2,7 +2,6 @@ name: Python build and test
 
 on:
   push:
-    branches: ['main', 'release']
     paths:
       - 'main.py'
       - 'src/python_xo/**'
@@ -10,7 +9,6 @@ on:
       - 'requirements_dev.txt'
       - '.github/workflows/python-build.yml'
   pull_request:
-    branches: ['main', 'release']
     paths:
       - 'main.py'
       - 'src/python_xo/**'
