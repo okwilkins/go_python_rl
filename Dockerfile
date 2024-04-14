@@ -18,7 +18,7 @@ FROM base as go-build
 # Copy Go files
 COPY go.mod /tmp/go-build/go.mod
 COPY main.go /tmp/go-build/main.go
-COPY go_xo /tmp/go-build/go_xo
+COPY src/go_xo /tmp/go-build/src/go_xo
 
 WORKDIR /tmp/go-build
 
@@ -40,7 +40,7 @@ COPY requirements.txt /tmp/requirements.txt
 RUN /home/rluser/python-venv/bin/python -m pip install -r /tmp/requirements.txt
 
 # Copy Python files
-COPY src/main.py /home/rluser/go_python_rl/main.py
+COPY main.py /home/rluser/go_python_rl/main.py
 COPY src/python_xo /home/rluser/go_python_rl/src/python_xo
 ENV PYTHONPATH=$PYTHONPATH:/home/rluser/go_python_rl/src
 
