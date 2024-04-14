@@ -32,7 +32,7 @@
           "/home/rluser/python-venv/bin/python"
         ],
         "mypy-type-checker.args": [
-          "--config-file=${workspaceFolder}/python_xo/pyproject.toml"
+          "--config-file=${workspaceFolder}/src/python_xo/pyproject.toml"
         ],
         "python.testing.pytestEnabled": true,
         "python.testing.pytestPath": "/home/rluser/python-venv/bin/python",
@@ -40,10 +40,10 @@
           "/home/rluser/python-venv/bin/python"
         ],
         "ruff.lint.args": [
-          "--config=${workspaceFolder}/python_xo/pyproject.toml"
+          "--config=${workspaceFolder}/src/python_xo/pyproject.toml"
         ],
         "ruff.format.args": [
-          "--config=${workspaceFolder}/python_xo/pyproject.toml"
+          "--config=${workspaceFolder}/src/python_xo/pyproject.toml"
         ],
         "[python]": {
           "editor.formatOnSave": true,
