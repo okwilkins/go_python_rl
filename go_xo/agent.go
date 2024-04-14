@@ -174,7 +174,7 @@ func (a *MinMaxAgent) ScoreBoard(observation [9]int, depth int) int {
 	}
 
 	switch score {
-	case 0:
+	case 10:
 		return score - depth
 	case -10:
 		// The player lost
