@@ -3,29 +3,28 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"math/rand"
 	"os"
 	"strconv"
 	"strings"
 	xo "xo/src/go_xo"
 )
 
-func run_simulation(env *xo.NaughtsAndCrossesEnvironment) {
-	env.Reset()
+// func run_simulation(env *xo.NaughtsAndCrossesEnvironment) {
+// 	env.Reset()
 
-	for !env.Terminated() {
-		env.Step(byte(rand.Intn(9)))
-	}
-}
+// 	for !env.Terminated() {
+// 		env.Step(byte(rand.Intn(9)))
+// 	}
+// }
 
-func run_simulation_non_ref() {
-	env := xo.NaughtsAndCrossesEnvironment{}
-	env.Reset()
+// func run_simulation_non_ref() {
+// 	env := xo.NaughtsAndCrossesEnvironment{}
+// 	env.Reset()
 
-	for !env.Terminated() {
-		env.Step(byte(rand.Intn(9)))
-	}
-}
+// 	for !env.Terminated() {
+// 		env.Step(byte(rand.Intn(9)))
+// 	}
+// }
 
 func main() {
 	agent := &xo.MinMaxAgent{AgentMark: xo.Naught, OpponentMark: xo.Cross}
