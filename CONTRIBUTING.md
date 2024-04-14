@@ -30,7 +30,7 @@ Before [creating an issue](https://help.github.com/en/github/managing-your-work-
 
 ### Reporting Security Issues
 
-Review our [Security Policy](./.github/blob/main/SECURITY.md). **Do not** file a public issue for security vulnerabilities.
+Review our [Security Policy](./SECURITY.md). **Do not** file a public issue for security vulnerabilities.
 
 ### Bug Reports and Other Issues
 
