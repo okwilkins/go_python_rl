@@ -9,7 +9,7 @@ ENV USE_CUDA=0
 # Create user and group
 RUN addgroup -S rluser && adduser -S rluser -G rluser
 
-# Copy files in
+# Copy Go binaries
 COPY --from=golang:1.22-alpine /usr/local/go/ /usr/local/go/
 
 
@@ -26,23 +26,23 @@ WORKDIR /tmp/go-build
 RUN go build -ldflags="-s -w" -o /usr/local/bin/go_xo
 
 
-FROM base as go-base
+FROM base as production
 
-# Copy Go binary
 COPY --from=go-build /usr/local/bin/go_xo /usr/local/bin/go_xo
-
-
-FROM go-base as production
-
-# Make Python venv
-RUN python -m venv /usr/local/python-venv
-RUN source /usr/local/python-venv/bin/activate
 
 USER rluser
 
+# Make Python venv
+RUN python -m venv /home/rluser/python-venv
+
 # Install Python dependencies
 COPY requirements.txt /tmp/requirements.txt
-RUN pip install -r /tmp/requirements.txt
+RUN /home/rluser/python-venv/bin/python -m pip install -r /tmp/requirements.txt
+
+# Copy Python files
+COPY main.py /home/rluser/go_python_rl/main.py
+COPY python_xo /home/rluser/go_python_rl/python_xo
+ENV PYTHONPATH=$PYTHONPATH:/home/rluser/go_python_rl
 
 # Clean up
 USER root
@@ -53,12 +53,8 @@ USER rluser
 
 FROM production as development
 
-RUN source /usr/local/python-venv/bin/activate
-
-USER rluser
-
 COPY requirements_dev.txt /tmp/requirements_dev.txt
-RUN pip install -r /tmp/requirements_dev.txt
+RUN /home/rluser/python-venv/bin/python -m pip install -r /tmp/requirements_dev.txt
 
 # Clean up
 USER root
