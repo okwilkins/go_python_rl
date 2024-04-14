@@ -1,0 +1,7 @@
+name: go_python_rl
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      target: production
+    container_name: go_python_rl
