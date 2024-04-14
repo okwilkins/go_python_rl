@@ -10,7 +10,7 @@ ENV USE_CUDA=0
 RUN addgroup -S rluser && adduser -S rluser -G rluser
 
 # Copy Go binaries
-COPY --from=golang:1.22-alpine /usr/local/go/ /usr/local/go/
+COPY --from=golang:1.21-alpine /usr/local/go/ /usr/local/go/
 
 
 FROM base as go-build
