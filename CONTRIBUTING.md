@@ -1,18 +1,22 @@
 # Contributing Guidelines
 
-*Pull requests, bug reports, and all other forms of contribution are welcomed and highly encouraged!* :octocat:
+*Pull requests, bug reports, and all other forms of contribution are welcomed and highly encouraged!*
 
-### Contents
+## Contents
 
-- [Code of Conduct](#code-of-conduct)
-- [Opening an Issue](#opening-an-issue)
-- [Feature Requests](#feature-requests)
-- [Triaging Issues](#triaging-issues)
-- [Submitting Pull Requests](#submitting-pull-requests)
-- [Code Review](#code-review)
-- [Coding Style](#coding-style)
-- [Certificate of Origin](#certificate-of-origin)
-- [Credits](#credits)
+- [Contributing Guidelines](#contributing-guidelines)
+  - [Contents](#contents)
+  - [Code of Conduct](#code-of-conduct)
+  - [Opening an Issue](#opening-an-issue)
+    - [Reporting Security Issues](#reporting-security-issues)
+    - [Bug Reports and Other Issues](#bug-reports-and-other-issues)
+  - [Feature Requests](#feature-requests)
+  - [Triaging Issues](#triaging-issues)
+  - [Submitting Pull Requests](#submitting-pull-requests)
+  - [Code Review](#code-review)
+  - [Coding Style](#coding-style)
+  - [Certificate of Origin](#certificate-of-origin)
+  - [Credits](#credits)
 
 > **This guide serves to set clear expectations for everyone involved with the project so that we can improve it together while also creating a welcoming space for everyone to participate. Following these guidelines will help ensure a positive experience for contributors and maintainers.**
 
@@ -36,7 +40,7 @@ In short, since you are most likely a developer, **provide a ticket that you wou
 
 - **Review the documentation** before opening a new issue.
 
-- **Do not open a duplicate issue!** Search through existing issues to see if your issue has previously been reported. If your issue exists, comment with any additional information you have. You may simply note "I have this problem too", which helps prioritize the most common problems and requests. 
+- **Do not open a duplicate issue!** Search through existing issues to see if your issue has previously been reported. If your issue exists, comment with any additional information you have. You may simply note "I have this problem too", which helps prioritize the most common problems and requests.
 
 - **Prefer using [reactions](https://github.blog/2016-03-10-add-reactions-to-pull-requests-issues-and-comments/)**, not comments, if you simply want to "+1" an existing issue.
 
@@ -50,7 +54,7 @@ Feature requests are welcome! While we will consider all requests, we cannot gua
 
 - **Do not open a duplicate feature request.** Search for existing feature requests first. If you find your feature (or one very similar) previously requested, comment on that issue.
 
-- **Fully complete the provided issue template.** The feature request template asks for all necessary information for us to begin a productive conversation. 
+- **Fully complete the provided issue template.** The feature request template asks for all necessary information for us to begin a productive conversation.
 
 - Be precise about the proposed outcome of the feature and how it relates to existing features. Include implementation details if possible.
 
@@ -64,7 +68,7 @@ We **love** pull requests! Before [forking the repo](https://help.github.com/en/
 
 *Note: All contributions will be licensed under the project's license.*
 
-- **Smaller is better.** Submit **one** pull request per bug fix or feature. A pull request should contain isolated changes pertaining to a single bug fix or feature implementation. **Do not** refactor or reformat code that is unrelated to your change. It is better to **submit many small pull requests** rather than a single large one. Enormous pull requests will take enormous amounts of time to review, or may be rejected altogether. 
+- **Smaller is better.** Submit **one** pull request per bug fix or feature. A pull request should contain isolated changes pertaining to a single bug fix or feature implementation. **Do not** refactor or reformat code that is unrelated to your change. It is better to **submit many small pull requests** rather than a single large one. Enormous pull requests will take enormous amounts of time to review, or may be rejected altogether.
 
 - **Coordinate bigger changes.** For large and non-trivial changes, open an issue to discuss a strategy with the maintainers. Otherwise, you risk doing a lot of work for nothing!
 
@@ -82,7 +86,7 @@ We **love** pull requests! Before [forking the repo](https://help.github.com/en/
 
 - **[Resolve any merge conflicts](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-on-github)** that occur.
 
-- **Promptly address any CI failures**. If your pull request fails to build or pass tests, please push another commit to fix it. 
+- **Promptly address any CI failures**. If your pull request fails to build or pass tests, please push another commit to fix it.
 
 - When writing comments, use properly constructed sentences, including punctuation.
 
@@ -94,7 +98,7 @@ We **love** pull requests! Before [forking the repo](https://help.github.com/en/
 
 - **Always do your best.** No one writes bugs on purpose. Do your best, and learn from your mistakes.
 
-- Kindly note any violations to the guidelines specified in this document. 
+- Kindly note any violations to the guidelines specified in this document.
 
 ## Coding Style
 
