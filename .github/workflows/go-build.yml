@@ -2,7 +2,13 @@ name: Go build and test
 
 on:
   push:
-    branches: ['release']
+    branches: ['main']
+    paths:
+      - 'go.mod'
+      - 'go.sum'
+      - 'main.go'
+      - 'src/go_xo/**'
+      - '.github/workflows/go-build.yml'
 
 permissions:
   contents: write
@@ -28,4 +34,12 @@ jobs:
       - name: Build
         run: go build -v
       - name: Test with the Go CLI
-        run: go test src/go_xo/tests/agent_test.go
+        run: go test ./...
+      - name: Vet check
+        run: go vet ./...
+      - name: Code style check
+        uses: dominikh/staticcheck-action@v1.2.0
+          with:
+            version: "2022.1.1"
+            install-go: false
+            cache-key: ${{ matrix.go }}
