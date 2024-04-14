@@ -11,14 +11,14 @@ const (
 	Cross  = 2
 )
 
-type Board [3][3]int
+type Board [3][3]byte
 
 type NaughtsAndCrossesEnvironment struct {
 	Board
-	TimeStep   int
-	UserMark   int
+	TimeStep   byte
+	UserMark   byte
 	Agent      Agent
-	LastPlayer int
+	LastPlayer byte
 }
 
 func (env *NaughtsAndCrossesEnvironment) Reset() {
@@ -56,8 +56,8 @@ func (env *NaughtsAndCrossesEnvironment) Render() {
 	}
 }
 
-func (env *NaughtsAndCrossesEnvironment) Observation() [9]int {
-	obs := [9]int{
+func (env *NaughtsAndCrossesEnvironment) Observation() [9]byte {
+	obs := [9]byte{
 		env.Board[0][0], env.Board[0][1], env.Board[0][2],
 		env.Board[1][0], env.Board[1][1], env.Board[1][2],
 		env.Board[2][0], env.Board[2][1], env.Board[2][2],
@@ -77,7 +77,7 @@ func (env *NaughtsAndCrossesEnvironment) GameIsDraw() bool {
 	return true
 }
 
-func (env *NaughtsAndCrossesEnvironment) GameWinner() int {
+func (env *NaughtsAndCrossesEnvironment) GameWinner() byte {
 	for i := 0; i < 3; i++ {
 		// Check for a win in the rows
 		if env.Board[i][0] == env.Board[i][1] && env.Board[i][1] == env.Board[i][2] && env.Board[i][0] != Empty {
@@ -125,8 +125,8 @@ func (env *NaughtsAndCrossesEnvironment) Reward() int {
 	return 0
 }
 
-func (env *NaughtsAndCrossesEnvironment) Step(action int) (
-	observation [9]int,
+func (env *NaughtsAndCrossesEnvironment) Step(action byte) (
+	observation [9]byte,
 	reward int,
 	terminated bool,
 	truncated bool,
@@ -150,8 +150,8 @@ func (env *NaughtsAndCrossesEnvironment) Step(action int) (
 }
 
 func (env *NaughtsAndCrossesEnvironment) PlaceMarker(
-	action int,
-	player_mark int,
+	action byte,
+	player_mark byte,
 ) {
 	row := action / 3
 	col := action % 3

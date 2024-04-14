@@ -14,7 +14,7 @@ func run_simulation(env *xo.NaughtsAndCrossesEnvironment) {
 	env.Reset()
 
 	for !env.Terminated() {
-		env.Step(rand.Intn(9))
+		env.Step(byte(rand.Intn(9)))
 	}
 }
 
@@ -23,7 +23,7 @@ func run_simulation_non_ref() {
 	env.Reset()
 
 	for !env.Terminated() {
-		env.Step(rand.Intn(9))
+		env.Step(byte(rand.Intn(9)))
 	}
 }
 
@@ -54,7 +54,7 @@ func main() {
 				fmt.Println("Invalid input. Please enter a valid integer.")
 				continue
 			}
-			env.Step(num)
+			env.Step(byte(num))
 		}
 	}
 

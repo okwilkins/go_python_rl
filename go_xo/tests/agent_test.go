@@ -13,7 +13,7 @@ func TestMinMaxAgentGameOver(t *testing.T) {
 		OpponentMark: xo.Cross,
 	}
 
-	game_over_observations := [][9]int{
+	game_over_observations := [][9]byte{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1},
 		{2, 2, 2, 2, 2, 2, 2, 2, 2},
 		{1, 0, 0, 1, 0, 0, 1, 0, 0},
@@ -41,7 +41,7 @@ func TestMinMaxAgentNotGameOver(t *testing.T) {
 		OpponentMark: xo.Cross,
 	}
 
-	game_not_over_observations := [][9]int{
+	game_not_over_observations := [][9]byte{
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 1},
 		{0, 0, 1, 0, 2, 0, 0, 0, 1},
@@ -60,7 +60,7 @@ func TestMinMaxAgentScoreBoardLosing(t *testing.T) {
 		OpponentMark: xo.Cross,
 	}
 
-	observations := [][9]int{
+	observations := [][9]byte{
 		{1, 2, 2, 0, 0, 2, 1, 1, 2},
 		{2, 2, 1, 1, 2, 2, 1, 1, 2},
 		{1, 2, 1, 2, 2, 2, 1, 1, 2},
@@ -69,7 +69,7 @@ func TestMinMaxAgentScoreBoardLosing(t *testing.T) {
 		{2, 1, 1, 0, 2, 0, 0, 0, 2},
 		{2, 1, 0, 1, 1, 0, 2, 2, 2},
 	}
-	correct_score := -10
+	var correct_score int8 = -10
 
 	for _, observation := range observations {
 		score := agent.ScoreBoard(observation, 0)
@@ -86,10 +86,10 @@ func TestMinMaxAgentScoreBoardWinning(t *testing.T) {
 		OpponentMark: xo.Cross,
 	}
 
-	observations := [][9]int{
+	observations := [][9]byte{
 		{1, 2, 2, 0, 1, 0, 0, 0, 1},
 	}
-	correct_score := 10
+	var correct_score int8 = 10
 
 	for _, observation := range observations {
 		score := agent.ScoreBoard(observation, 0)
@@ -106,13 +106,13 @@ func TestMinMaxAgentPossibleGames(t *testing.T) {
 		OpponentMark: xo.Cross,
 	}
 
-	observations := [][9]int{
+	observations := [][9]byte{
 		{1, 1, 0, 0, 0, 2, 0, 0, 2},
 		{1, 2, 1, 0, 0, 2, 1, 1, 2},
 		{1, 2, 1, 2, 2, 2, 1, 1, 2},
 	}
 
-	expected_possible_games := [][][9]int{
+	expected_possible_games := [][][9]byte{
 		{
 			{1, 1, 1, 0, 0, 2, 0, 0, 2},
 			{1, 1, 0, 1, 0, 2, 0, 0, 2},
@@ -157,7 +157,7 @@ func TestMinMaxAgentAlgorithm(t *testing.T) {
 		OpponentMark: xo.Cross,
 	}
 
-	observations := [][9]int{
+	observations := [][9]byte{
 		{1, 2, 0, 0, 0, 2, 1, 1, 2},
 		{0, 2, 1, 0, 0, 2, 1, 1, 2},
 		{0, 2, 0, 1, 0, 2, 1, 1, 2},
@@ -173,9 +173,9 @@ func TestMinMaxAgentAlgorithm(t *testing.T) {
 		{2, 1, 0, 1, 1, 0, 0, 2, 2},
 	}
 
-	correct_scores := []int{-8, -6, -8, -8, -6, 9, -9, -10, -10, -9, -10, -10, -9}
-	depths := []int{1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	current_players := []int{
+	correct_scores := []int8{-8, -6, -8, -8, -6, 9, -9, -10, -10, -9, -10, -10, -9}
+	depths := []byte{1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	current_players := []byte{
 		xo.Cross,
 		xo.Cross,
 		xo.Cross,
@@ -213,7 +213,7 @@ func TestMinMaxAgentCorrectMove(t *testing.T) {
 		OpponentMark: xo.Cross,
 	}
 
-	observations := [][9]int{
+	observations := [][9]byte{
 		{1, 2, 1, 0, 2, 2, 1, 1, 2},
 		{0, 2, 1, 1, 2, 2, 1, 1, 2},
 		{0, 2, 0, 0, 1, 2, 1, 1, 2},
@@ -221,7 +221,7 @@ func TestMinMaxAgentCorrectMove(t *testing.T) {
 		{1, 0, 2, 0, 0, 0, 0, 0, 1},
 		{1, 2, 0, 0, 2, 0, 0, 1, 1},
 	}
-	correct_moves := [][]int{{3}, {0}, {2}, {1, 8}, {4}, {6}}
+	correct_moves := [][]byte{{3}, {0}, {2}, {1, 8}, {4}, {6}}
 
 	for i := range observations {
 		action := agent.TakeAction(observations[i])
@@ -238,14 +238,14 @@ func TestMinMaxAgentCorrectMove(t *testing.T) {
 }
 
 func TestGetIndexOfEmptyCells(t *testing.T) {
-	observations := [][9]int{
+	observations := [][9]byte{
 		{1, 0, 2, 0, 1, 0, 2, 0, 1},
 		{0, 1, 0, 2, 0, 1, 0, 2, 0},
 		{2, 0, 1, 0, 2, 0, 1, 0, 2},
 		{0, 2, 0, 1, 0, 2, 0, 1, 0},
 		{2, 0, 1, 0, 0, 0, 1, 2, 1},
 	}
-	expected := [][]int{
+	expected := [][]byte{
 		{1, 3, 5, 7},
 		{0, 2, 4, 6, 8},
 		{1, 3, 5, 7},
