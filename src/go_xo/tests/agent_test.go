@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"slices"
 	"testing"
-	xo "xo/go_xo"
+	xo "xo/src/go_xo"
 )
 
 func TestMinMaxAgentGameOver(t *testing.T) {
