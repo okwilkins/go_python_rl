@@ -27,7 +27,7 @@ This project uses a dev container for a consistent development environment. To g
 
 If you prefer not to use the dev container, you can also set up a local development environment. Make sure you have the following installed on your machine:
 
-- [Go](https://golang.org/dl/) (version 1.21 or newer)
+- [Go](https://golang.org/dl/) (version 1.22 or newer)
 - [Python](https://www.python.org/downloads/) (version 3.9 or newer)
 
 
