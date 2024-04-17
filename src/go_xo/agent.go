@@ -1,6 +1,7 @@
 package xo
 
 import (
+	"errors"
 	"math/rand"
 	"slices"
 )
@@ -8,7 +9,7 @@ import (
 // TODO: use pointers for the agents
 
 type Agent interface {
-	TakeAction(observation *[9]byte) byte
+	TakeAction(observation *[9]byte) (byte, error)
 	GetMark() *byte
 }
 
@@ -16,9 +17,12 @@ type RandomAgent struct {
 	Mark byte
 }
 
-func (a *RandomAgent) TakeAction(observation *[9]byte) byte {
+func (a *RandomAgent) TakeAction(observation *[9]byte) (byte, error) {
 	empty_cells := GetIndexOfEmptyCells(observation)
-	return empty_cells[rand.Intn(len(empty_cells))]
+	if len(empty_cells) == 0 {
+		return 0, nil
+	}
+	return empty_cells[rand.Intn(len(empty_cells))], errors.New("no empty cell found")
 }
 
 func (a *RandomAgent) GetMark() *byte {
@@ -29,16 +33,16 @@ type FillFirstEmptyAgent struct {
 	Mark byte
 }
 
-func (a *FillFirstEmptyAgent) TakeAction(observation *[9]byte) byte {
+func (a *FillFirstEmptyAgent) TakeAction(observation *[9]byte) (byte, error) {
 	empty_cells := GetIndexOfEmptyCells(observation)
 
 	for _, cell := range empty_cells {
 		if observation[cell] == Empty {
-			return cell
+			return cell, nil
 		}
 	}
 
-	panic("No empty cells found!")
+	return 0, errors.New("no empty cell found")
 }
 
 func (a *FillFirstEmptyAgent) GetMark() *byte {
@@ -50,7 +54,7 @@ type MinMaxAgent struct {
 	OpponentMark byte
 }
 
-func (a *MinMaxAgent) TakeAction(observation *[9]byte) byte {
+func (a *MinMaxAgent) TakeAction(observation *[9]byte) (byte, error) {
 	first_turn := true
 
 	for _, cell := range observation {
@@ -68,15 +72,23 @@ func (a *MinMaxAgent) TakeAction(observation *[9]byte) byte {
 	}
 }
 
-func (a *MinMaxAgent) TakeRandomAction(observation *[9]byte) byte {
+func (a *MinMaxAgent) TakeRandomAction(observation *[9]byte) (byte, error) {
 	empty_cells := GetIndexOfEmptyCells(observation)
-	return empty_cells[rand.Intn(len(empty_cells))]
+	if len(empty_cells) == 0 {
+		return 0, errors.New("no empty cells were found")
+	}
+	return empty_cells[rand.Intn(len(empty_cells))], nil
 }
 
-func (a *MinMaxAgent) TakeMinMaxAction(observation *[9]byte) byte {
+func (a *MinMaxAgent) TakeMinMaxAction(observation *[9]byte) (byte, error) {
 	best_moves := a.GetMinMaxBestMoves(observation)
+
+	if len(best_moves) == 0 {
+		return 0, errors.New("min max algorithm could not find moves")
+	}
+
 	randIdx := rand.Intn(len(best_moves))
-	return best_moves[randIdx]
+	return best_moves[randIdx], nil
 }
 
 func (a *MinMaxAgent) GetMinMaxBestMoves(observation *[9]byte) []byte {

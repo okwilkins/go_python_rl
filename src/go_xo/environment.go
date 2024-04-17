@@ -1,8 +1,10 @@
 package xo
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
+	"strconv"
 )
 
 const (
@@ -126,37 +128,45 @@ func (env *NaughtsAndCrossesEnvironment) Reward() int {
 	return 0
 }
 
-func (env *NaughtsAndCrossesEnvironment) Step(action byte) (
-	observation [9]byte,
-	reward int,
-	terminated bool,
-	truncated bool,
-) {
-	if !env.Terminated() {
-		env.PlaceMarker(action, &env.UserMark)
+func (env *NaughtsAndCrossesEnvironment) Step(action *byte) ([9]byte, int, bool, bool, error) {
+	// Do the input action
+	err := env.DoAction(action)
 
-		if !env.Terminated() {
-			observation := env.Observation()
-			agent_action := env.Agent.TakeAction(&observation)
-			env.PlaceMarker(agent_action, env.Agent.GetMark())
+	if err != nil {
+		return [9]byte{}, 0, true, true, err
+	}
+
+	// Do the agent action
+	if !env.Terminated() {
+		observation := env.Observation()
+		agent_action, err := env.Agent.TakeAction(&observation)
+
+		if err == nil {
+			env.PlaceMarker(&agent_action, env.Agent.GetMark())
+		} else {
+			return [9]byte{}, 0, true, true, err
 		}
 	}
 
-	env.TimeStep += 1
-	reward = env.Reward()
-	terminated = env.Terminated()
-	observation = env.Observation()
-	truncated = env.Truncated()
+	return env.Observation(), env.Reward(), env.Terminated(), env.Truncated(), nil
+}
 
-	return
+func (env *NaughtsAndCrossesEnvironment) DoAction(action *byte) error {
+	if !env.Terminated() {
+		env.PlaceMarker(action, &env.UserMark)
+		return nil
+	} else {
+		error_message := "can not take action: " + strconv.Itoa(int(*action)) + " because game is terminated"
+		return errors.New(error_message)
+	}
 }
 
 func (env *NaughtsAndCrossesEnvironment) PlaceMarker(
-	action byte,
+	action *byte,
 	player_mark *byte,
 ) {
-	row := action / 3
-	col := action % 3
+	row := *action / 3
+	col := *action % 3
 
 	if env.Board[row][col] == Empty {
 		env.Board[row][col] = *player_mark

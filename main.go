@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"sync"
 	xo "xo/src/go_xo"
 )
 
-func run_simulation(env *xo.NaughtsAndCrossesEnvironment) {
+func run_simulation(env xo.NaughtsAndCrossesEnvironment) {
 	env.Reset()
 	opponent_agent := xo.MinMaxAgent{
 		AgentMark:    *env.Agent.GetMark(),
@@ -14,7 +15,13 @@ func run_simulation(env *xo.NaughtsAndCrossesEnvironment) {
 
 	for !env.Terminated() {
 		observation := env.Observation()
-		env.Step(opponent_agent.TakeAction(&observation))
+		action, err := opponent_agent.TakeAction(&observation)
+
+		if err == nil {
+			env.Step(&action)
+		} else {
+			fmt.Printf("%v", err)
+		}
 	}
 }
 
@@ -32,11 +39,11 @@ func main() {
 	}
 	wg := sync.WaitGroup{}
 
-	for i := 0; i < 1_000; i++ {
+	for i := 0; i < 1000; i++ {
 		wg.Add(1)
 		go func(id int) {
 			defer wg.Done()
-			run_simulation(&env)
+			run_simulation(env)
 		}(i)
 	}
 
