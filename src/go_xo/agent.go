@@ -6,7 +6,6 @@ import (
 )
 
 // TODO: use pointers for the agents
-// TODO: Use better types like byte for the marks
 
 type Agent interface {
 	TakeAction(observation [9]byte) byte
