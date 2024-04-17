@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sync"
 	xo "xo/src/go_xo"
 )
 
@@ -29,7 +30,15 @@ func main() {
 		UserMark: xo.Cross,
 		Agent:    agent,
 	}
-	for i := 0; i < 1000; i++ {
-		run_simulation(&env)
+	wg := sync.WaitGroup{}
+
+	for i := 0; i < 1_000; i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			run_simulation(&env)
+		}(i)
 	}
+
+	wg.Wait()
 }
