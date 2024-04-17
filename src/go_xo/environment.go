@@ -31,8 +31,9 @@ func (env *NaughtsAndCrossesEnvironment) Reset() {
 
 	// Randomly decide if the agent goes first
 	if rand.Intn(2) == 1 {
-		env.Agent.TakeAction(env.Observation())
-		env.LastPlayer = env.Agent.GetMark()
+		observation := env.Observation()
+		env.Agent.TakeAction(&observation)
+		env.LastPlayer = *env.Agent.GetMark()
 	}
 }
 
@@ -132,10 +133,11 @@ func (env *NaughtsAndCrossesEnvironment) Step(action byte) (
 	truncated bool,
 ) {
 	if !env.Terminated() {
-		env.PlaceMarker(action, env.UserMark)
+		env.PlaceMarker(action, &env.UserMark)
 
 		if !env.Terminated() {
-			agent_action := env.Agent.TakeAction(env.Observation())
+			observation := env.Observation()
+			agent_action := env.Agent.TakeAction(&observation)
 			env.PlaceMarker(agent_action, env.Agent.GetMark())
 		}
 	}
@@ -151,12 +153,12 @@ func (env *NaughtsAndCrossesEnvironment) Step(action byte) (
 
 func (env *NaughtsAndCrossesEnvironment) PlaceMarker(
 	action byte,
-	player_mark byte,
+	player_mark *byte,
 ) {
 	row := action / 3
 	col := action % 3
 
 	if env.Board[row][col] == Empty {
-		env.Board[row][col] = player_mark
+		env.Board[row][col] = *player_mark
 	}
 }

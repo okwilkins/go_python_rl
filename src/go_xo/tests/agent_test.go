@@ -29,7 +29,7 @@ func TestMinMaxAgentGameOver(t *testing.T) {
 	}
 
 	for _, observation := range game_over_observations {
-		if !agent.GameOver(observation) {
+		if !agent.GameOver(&observation) {
 			t.Errorf("Observation %v was supposed to be a game over!", observation)
 		}
 	}
@@ -48,7 +48,7 @@ func TestMinMaxAgentNotGameOver(t *testing.T) {
 	}
 
 	for _, observation := range game_not_over_observations {
-		if agent.GameOver(observation) {
+		if agent.GameOver(&observation) {
 			t.Errorf("Observation %v was supposed to not be game over!", observation)
 		}
 	}
@@ -72,7 +72,7 @@ func TestMinMaxAgentScoreBoardLosing(t *testing.T) {
 	var correct_score int8 = -10
 
 	for _, observation := range observations {
-		score := agent.ScoreBoard(observation, 0)
+		score := agent.ScoreBoard(&observation, 0)
 
 		if score != correct_score {
 			t.Errorf("Observation %v had score %v! Was meant to be %v!", observation, score, correct_score)
@@ -92,7 +92,7 @@ func TestMinMaxAgentScoreBoardWinning(t *testing.T) {
 	var correct_score int8 = 10
 
 	for _, observation := range observations {
-		score := agent.ScoreBoard(observation, 0)
+		score := agent.ScoreBoard(&observation, 0)
 
 		if score != correct_score {
 			t.Errorf("Observation %v had score %v! Was meant to be %v!", observation, score, correct_score)
@@ -128,7 +128,7 @@ func TestMinMaxAgentPossibleGames(t *testing.T) {
 	}
 
 	for i := range observations {
-		result := agent.GetPossibleGames(observations[i], agent.AgentMark)
+		result := agent.GetPossibleGames(&observations[i], agent.AgentMark)
 
 		if !reflect.DeepEqual(result, expected_possible_games[i]) {
 			t.Errorf("Expected %v, but got %v", expected_possible_games[i], result)
@@ -192,7 +192,7 @@ func TestMinMaxAgentAlgorithm(t *testing.T) {
 	}
 
 	for i := range observations {
-		score := agent.MinMax(observations[i], depths[i], current_players[i])
+		score := agent.MinMax(&observations[i], depths[i], current_players[i])
 
 		if score != correct_scores[i] {
 			t.Errorf(
@@ -224,7 +224,7 @@ func TestMinMaxAgentGetMinMaxBestMoves(t *testing.T) {
 	correct_moves := [][]byte{{3}, {0}, {2}, {1, 8}, {4}, {6}}
 
 	for i := range observations {
-		actions := agent.GetMinMaxBestMoves(observations[i])
+		actions := agent.GetMinMaxBestMoves(&observations[i])
 
 		for _, action := range actions {
 			if !slices.Contains(correct_moves[i], action) {
@@ -256,7 +256,7 @@ func TestGetIndexOfEmptyCells(t *testing.T) {
 	}
 
 	for i := range observations {
-		result := xo.GetIndexOfEmptyCells(observations[i])
+		result := xo.GetIndexOfEmptyCells(&observations[i])
 
 		if !reflect.DeepEqual(result, expected[i]) {
 			t.Errorf("Expected %v, but got %v", expected, result)

@@ -8,28 +8,28 @@ import (
 // TODO: use pointers for the agents
 
 type Agent interface {
-	TakeAction(observation [9]byte) byte
-	GetMark() byte
+	TakeAction(observation *[9]byte) byte
+	GetMark() *byte
 }
 
 type RandomAgent struct {
 	Mark byte
 }
 
-func (a *RandomAgent) TakeAction(observation [9]byte) byte {
+func (a *RandomAgent) TakeAction(observation *[9]byte) byte {
 	empty_cells := GetIndexOfEmptyCells(observation)
 	return empty_cells[rand.Intn(len(empty_cells))]
 }
 
-func (a *RandomAgent) GetMark() byte {
-	return a.Mark
+func (a *RandomAgent) GetMark() *byte {
+	return &a.Mark
 }
 
 type FillFirstEmptyAgent struct {
 	Mark byte
 }
 
-func (a *FillFirstEmptyAgent) TakeAction(observation [9]byte) byte {
+func (a *FillFirstEmptyAgent) TakeAction(observation *[9]byte) byte {
 	empty_cells := GetIndexOfEmptyCells(observation)
 
 	for _, cell := range empty_cells {
@@ -41,8 +41,8 @@ func (a *FillFirstEmptyAgent) TakeAction(observation [9]byte) byte {
 	panic("No empty cells found!")
 }
 
-func (a *FillFirstEmptyAgent) GetMark() byte {
-	return a.Mark
+func (a *FillFirstEmptyAgent) GetMark() *byte {
+	return &a.Mark
 }
 
 type MinMaxAgent struct {
@@ -50,7 +50,7 @@ type MinMaxAgent struct {
 	OpponentMark byte
 }
 
-func (a *MinMaxAgent) TakeAction(observation [9]byte) byte {
+func (a *MinMaxAgent) TakeAction(observation *[9]byte) byte {
 	first_turn := true
 
 	for _, cell := range observation {
@@ -68,27 +68,27 @@ func (a *MinMaxAgent) TakeAction(observation [9]byte) byte {
 	}
 }
 
-func (a *MinMaxAgent) TakeRandomAction(observation [9]byte) byte {
+func (a *MinMaxAgent) TakeRandomAction(observation *[9]byte) byte {
 	empty_cells := GetIndexOfEmptyCells(observation)
 	return empty_cells[rand.Intn(len(empty_cells))]
 }
 
-func (a *MinMaxAgent) TakeMinMaxAction(observation [9]byte) byte {
+func (a *MinMaxAgent) TakeMinMaxAction(observation *[9]byte) byte {
 	best_moves := a.GetMinMaxBestMoves(observation)
 	randIdx := rand.Intn(len(best_moves))
 	return best_moves[randIdx]
 }
 
-func (a *MinMaxAgent) GetMinMaxBestMoves(observation [9]byte) []byte {
+func (a *MinMaxAgent) GetMinMaxBestMoves(observation *[9]byte) []byte {
 	var best_score int8 = -10
 	var best_moves []byte
 
 	for _, cell := range GetIndexOfEmptyCells(observation) {
-		possible_game := observation
+		possible_game := *observation
 		possible_game[cell] = a.AgentMark
 
 		next_player := a.GetNextPlayer(a.AgentMark)
-		score := a.MinMax(possible_game, 0, next_player)
+		score := a.MinMax(&possible_game, 0, next_player)
 
 		if score == best_score {
 			best_moves = append(best_moves, cell)
@@ -101,7 +101,7 @@ func (a *MinMaxAgent) GetMinMaxBestMoves(observation [9]byte) []byte {
 	return best_moves
 }
 
-func (a *MinMaxAgent) GameOver(observation [9]byte) bool {
+func (a *MinMaxAgent) GameOver(observation *[9]byte) bool {
 	for i := 0; i < 3; i++ {
 		// Check for win in the rows
 		if observation[i*3] == observation[i*3+1] &&
@@ -143,7 +143,7 @@ func (a *MinMaxAgent) GameOver(observation [9]byte) bool {
 	return game_is_draw
 }
 
-func (a *MinMaxAgent) ScoreBoard(observation [9]byte, depth byte) int8 {
+func (a *MinMaxAgent) ScoreBoard(observation *[9]byte, depth byte) int8 {
 	var score int8 = 0
 
 	for i := 0; i < 3; i++ {
@@ -190,11 +190,11 @@ func (a *MinMaxAgent) ScoreBoard(observation [9]byte, depth byte) int8 {
 	}
 }
 
-func (a *MinMaxAgent) GetPossibleGames(observation [9]byte, next_player byte) [][9]byte {
+func (a *MinMaxAgent) GetPossibleGames(observation *[9]byte, next_player byte) [][9]byte {
 	var possible_games [][9]byte
 
 	for _, cell := range GetIndexOfEmptyCells(observation) {
-		possible_game := observation
+		possible_game := *observation
 		possible_game[cell] = next_player
 		possible_games = append(possible_games, possible_game)
 	}
@@ -210,7 +210,7 @@ func (a *MinMaxAgent) GetNextPlayer(current_player byte) byte {
 	}
 }
 
-func (a *MinMaxAgent) MinMax(observation [9]byte, depth byte, current_player byte) int8 {
+func (a *MinMaxAgent) MinMax(observation *[9]byte, depth byte, current_player byte) int8 {
 	// If game over, return the score
 	if a.GameOver(observation) {
 		return a.ScoreBoard(observation, depth)
@@ -222,7 +222,7 @@ func (a *MinMaxAgent) MinMax(observation [9]byte, depth byte, current_player byt
 
 	for _, possible_game := range possible_games {
 		next_player := a.GetNextPlayer(current_player)
-		possible_score := a.MinMax(possible_game, depth, next_player)
+		possible_score := a.MinMax(&possible_game, depth, next_player)
 		scores = append(scores, possible_score)
 	}
 
@@ -242,11 +242,11 @@ func (a *MinMaxAgent) GetMinMaxScoreMap() map[byte]int8 {
 	return score_map
 }
 
-func (a *MinMaxAgent) GetMark() byte {
-	return a.AgentMark
+func (a *MinMaxAgent) GetMark() *byte {
+	return &a.AgentMark
 }
 
-func GetIndexOfEmptyCells(observation [9]byte) []byte {
+func GetIndexOfEmptyCells(observation *[9]byte) []byte {
 	var empty_cells []byte
 	for i, cell := range observation {
 		if cell == Empty {
