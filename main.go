@@ -1,11 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
 	xo "xo/src/go_xo"
 )
 
@@ -26,6 +22,19 @@ import (
 // 	}
 // }
 
+func run_simulation(env *xo.NaughtsAndCrossesEnvironment) {
+	env.Reset()
+	opponent_agent := xo.MinMaxAgent{
+		AgentMark:    *env.Agent.GetMark(),
+		OpponentMark: env.UserMark,
+	}
+
+	for !env.Terminated() {
+		observation := env.Observation()
+		env.Step(opponent_agent.TakeAction(&observation))
+	}
+}
+
 func main() {
 	agent := &xo.MinMaxAgent{AgentMark: xo.Naught, OpponentMark: xo.Cross}
 	env := xo.NaughtsAndCrossesEnvironment{
@@ -38,24 +47,9 @@ func main() {
 		UserMark: xo.Cross,
 		Agent:    agent,
 	}
-	env.Reset()
-
-	reader := bufio.NewReader(os.Stdin)
-
-	for !env.Terminated() {
+	for i := 0; i < 9; i++ {
+		fmt.Printf("Simulation %d\n", i+1)
+		run_simulation(&env)
 		env.Render()
-		text, _ := reader.ReadString('\n')
-		text = strings.TrimSpace(text)
-
-		if !env.Terminated() {
-			num, err := strconv.Atoi(text)
-			if err != nil || num < 0 || num > 8 {
-				fmt.Println("Invalid input. Please enter a valid integer.")
-				continue
-			}
-			env.Step(byte(num))
-		}
 	}
-
-	env.Render()
 }
