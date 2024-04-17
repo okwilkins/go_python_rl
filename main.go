@@ -5,23 +5,6 @@ import (
 	xo "xo/src/go_xo"
 )
 
-// func run_simulation(env *xo.NaughtsAndCrossesEnvironment) {
-// 	env.Reset()
-
-// 	for !env.Terminated() {
-// 		env.Step(byte(rand.Intn(9)))
-// 	}
-// }
-
-// func run_simulation_non_ref() {
-// 	env := xo.NaughtsAndCrossesEnvironment{}
-// 	env.Reset()
-
-// 	for !env.Terminated() {
-// 		env.Step(byte(rand.Intn(9)))
-// 	}
-// }
-
 func run_simulation(env *xo.NaughtsAndCrossesEnvironment) {
 	env.Reset()
 	opponent_agent := xo.MinMaxAgent{
