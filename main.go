@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	xo "xo/src/go_xo"
 )
 
@@ -30,9 +29,7 @@ func main() {
 		UserMark: xo.Cross,
 		Agent:    agent,
 	}
-	for i := 0; i < 9; i++ {
-		fmt.Printf("Simulation %d\n", i+1)
+	for i := 0; i < 1000; i++ {
 		run_simulation(&env)
-		env.Render()
 	}
 }
