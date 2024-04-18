@@ -1,7 +1,6 @@
 package xo
 
 import (
-	"errors"
 	"fmt"
 	"math/rand"
 	"slices"
@@ -41,7 +40,7 @@ func (a *FillFirstEmptyAgent) TakeAction(observation *[9]byte) (byte, error) {
 		}
 	}
 
-	return 0, errors.New("no empty cell found")
+	return 0, fmt.Errorf("no empty cell found in observation: %v", observation)
 }
 
 func (a *FillFirstEmptyAgent) GetMark() byte {
@@ -74,7 +73,7 @@ func (a *MinMaxAgent) TakeAction(observation *[9]byte) (byte, error) {
 func (a *MinMaxAgent) TakeRandomAction(observation *[9]byte) (byte, error) {
 	empty_cells := GetIndexOfEmptyCells(observation)
 	if len(empty_cells) == 0 {
-		return 0, errors.New("no empty cells were found")
+		return 0, fmt.Errorf("no empty cells were found in observation: %v", observation)
 	}
 	return empty_cells[rand.Intn(len(empty_cells))], nil
 }
@@ -83,7 +82,10 @@ func (a *MinMaxAgent) TakeMinMaxAction(observation *[9]byte) (byte, error) {
 	best_moves := a.GetMinMaxBestMoves(observation)
 
 	if len(best_moves) == 0 {
-		return 0, errors.New("min max algorithm could not find moves")
+		return 0, fmt.Errorf(
+			"min max algorithm could not find moves as there are no available moves in observation: %v",
+			observation,
+		)
 	}
 
 	randIdx := rand.Intn(len(best_moves))
