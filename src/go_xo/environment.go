@@ -1,7 +1,6 @@
 package xo
 
 import (
-	"errors"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -162,8 +161,7 @@ func (env *NaughtsAndCrossesEnvironment) DoAction(action byte) error {
 		env.PlaceMarker(action, env.UserMark)
 		return nil
 	} else {
-		error_message := "can not take action: " + strconv.Itoa(int(action)) + " because game is terminated"
-		return errors.New(error_message)
+		return fmt.Errorf("can not take action: %v because game is terminated", strconv.Itoa(int(action)))
 	}
 }
 
