@@ -2,6 +2,7 @@ package xo
 
 import (
 	"errors"
+	"fmt"
 	"math/rand"
 	"slices"
 )
@@ -18,9 +19,9 @@ type RandomAgent struct {
 func (a *RandomAgent) TakeAction(observation *[9]byte) (byte, error) {
 	empty_cells := GetIndexOfEmptyCells(observation)
 	if len(empty_cells) == 0 {
-		return 0, nil
+		return 0, fmt.Errorf("no empty cell found in observation: %v", observation)
 	}
-	return empty_cells[rand.Intn(len(empty_cells))], errors.New("no empty cell found")
+	return empty_cells[rand.Intn(len(empty_cells))], nil
 }
 
 func (a *RandomAgent) GetMark() byte {
