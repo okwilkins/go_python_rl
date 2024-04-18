@@ -24,12 +24,16 @@ func run_simulation(env xo.NaughtsAndCrossesEnvironment) {
 
 	for !env.Terminated() {
 		observation := env.Observation()
-		action, err := opponent_agent.TakeAction(&observation)
+		action, action_err := opponent_agent.TakeAction(&observation)
 
-		if err == nil {
-			env.Step(action)
+		if action_err == nil {
+			_, _, _, _, step_err := env.Step(action)
+
+			if step_err != nil {
+				fmt.Println(step_err)
+			}
 		} else {
-			fmt.Printf("%v", err)
+			fmt.Println(action_err)
 		}
 	}
 }
