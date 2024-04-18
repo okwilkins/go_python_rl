@@ -34,8 +34,14 @@ func (env *NaughtsAndCrossesEnvironment) Reset() {
 	// Randomly decide if the agent goes first
 	if rand.Intn(2) == 1 {
 		observation := env.Observation()
-		env.Agent.TakeAction(&observation)
+		action, err := env.Agent.TakeAction(&observation)
 		env.LastPlayer = env.Agent.GetMark()
+
+		if err == nil {
+			env.PlaceMarker(action, env.Agent.GetMark())
+		} else {
+			fmt.Printf("%v", err)
+		}
 	}
 }
 
