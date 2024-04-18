@@ -35,7 +35,7 @@ func (env *NaughtsAndCrossesEnvironment) Reset() {
 	if rand.Intn(2) == 1 {
 		observation := env.Observation()
 		env.Agent.TakeAction(&observation)
-		env.LastPlayer = *env.Agent.GetMark()
+		env.LastPlayer = env.Agent.GetMark()
 	}
 }
 
@@ -128,7 +128,7 @@ func (env *NaughtsAndCrossesEnvironment) Reward() int {
 	return 0
 }
 
-func (env *NaughtsAndCrossesEnvironment) Step(action *byte) ([9]byte, int, bool, bool, error) {
+func (env *NaughtsAndCrossesEnvironment) Step(action byte) ([9]byte, int, bool, bool, error) {
 	// Do the input action
 	err := env.DoAction(action)
 
@@ -142,7 +142,7 @@ func (env *NaughtsAndCrossesEnvironment) Step(action *byte) ([9]byte, int, bool,
 		agent_action, err := env.Agent.TakeAction(&observation)
 
 		if err == nil {
-			env.PlaceMarker(&agent_action, env.Agent.GetMark())
+			env.PlaceMarker(agent_action, env.Agent.GetMark())
 		} else {
 			return [9]byte{}, 0, true, true, err
 		}
@@ -151,24 +151,24 @@ func (env *NaughtsAndCrossesEnvironment) Step(action *byte) ([9]byte, int, bool,
 	return env.Observation(), env.Reward(), env.Terminated(), env.Truncated(), nil
 }
 
-func (env *NaughtsAndCrossesEnvironment) DoAction(action *byte) error {
+func (env *NaughtsAndCrossesEnvironment) DoAction(action byte) error {
 	if !env.Terminated() {
-		env.PlaceMarker(action, &env.UserMark)
+		env.PlaceMarker(action, env.UserMark)
 		return nil
 	} else {
-		error_message := "can not take action: " + strconv.Itoa(int(*action)) + " because game is terminated"
+		error_message := "can not take action: " + strconv.Itoa(int(action)) + " because game is terminated"
 		return errors.New(error_message)
 	}
 }
 
 func (env *NaughtsAndCrossesEnvironment) PlaceMarker(
-	action *byte,
-	player_mark *byte,
+	action byte,
+	player_mark byte,
 ) {
-	row := *action / 3
-	col := *action % 3
+	row := action / 3
+	col := action % 3
 
 	if env.Board[row][col] == Empty {
-		env.Board[row][col] = *player_mark
+		env.Board[row][col] = player_mark
 	}
 }

@@ -6,11 +6,9 @@ import (
 	"slices"
 )
 
-// TODO: use pointers for the agents
-
 type Agent interface {
 	TakeAction(observation *[9]byte) (byte, error)
-	GetMark() *byte
+	GetMark() byte
 }
 
 type RandomAgent struct {
@@ -25,8 +23,8 @@ func (a *RandomAgent) TakeAction(observation *[9]byte) (byte, error) {
 	return empty_cells[rand.Intn(len(empty_cells))], errors.New("no empty cell found")
 }
 
-func (a *RandomAgent) GetMark() *byte {
-	return &a.Mark
+func (a *RandomAgent) GetMark() byte {
+	return a.Mark
 }
 
 type FillFirstEmptyAgent struct {
@@ -45,8 +43,8 @@ func (a *FillFirstEmptyAgent) TakeAction(observation *[9]byte) (byte, error) {
 	return 0, errors.New("no empty cell found")
 }
 
-func (a *FillFirstEmptyAgent) GetMark() *byte {
-	return &a.Mark
+func (a *FillFirstEmptyAgent) GetMark() byte {
+	return a.Mark
 }
 
 type MinMaxAgent struct {
@@ -254,8 +252,8 @@ func (a *MinMaxAgent) GetMinMaxScoreMap() map[byte]int8 {
 	return score_map
 }
 
-func (a *MinMaxAgent) GetMark() *byte {
-	return &a.AgentMark
+func (a *MinMaxAgent) GetMark() byte {
+	return a.AgentMark
 }
 
 func GetIndexOfEmptyCells(observation *[9]byte) []byte {

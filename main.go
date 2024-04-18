@@ -2,14 +2,23 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"sync"
+	"time"
 	xo "xo/src/go_xo"
 )
+
+func timer(name string) func() {
+	start := time.Now()
+	return func() {
+		fmt.Printf("%s took %v\n", name, time.Since(start))
+	}
+}
 
 func run_simulation(env xo.NaughtsAndCrossesEnvironment) {
 	env.Reset()
 	opponent_agent := xo.MinMaxAgent{
-		AgentMark:    *env.Agent.GetMark(),
+		AgentMark:    env.Agent.GetMark(),
 		OpponentMark: env.UserMark,
 	}
 
@@ -18,7 +27,7 @@ func run_simulation(env xo.NaughtsAndCrossesEnvironment) {
 		action, err := opponent_agent.TakeAction(&observation)
 
 		if err == nil {
-			env.Step(&action)
+			env.Step(action)
 		} else {
 			fmt.Printf("%v", err)
 		}
@@ -26,6 +35,7 @@ func run_simulation(env xo.NaughtsAndCrossesEnvironment) {
 }
 
 func main() {
+	defer timer("main")()
 	agent := &xo.MinMaxAgent{AgentMark: xo.Naught, OpponentMark: xo.Cross}
 	env := xo.NaughtsAndCrossesEnvironment{
 		Board: xo.Board{
@@ -48,4 +58,6 @@ func main() {
 	}
 
 	wg.Wait()
+	fmt.Println("Done")
+	os.Exit(0)
 }
